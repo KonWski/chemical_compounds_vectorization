@@ -21,7 +21,7 @@ def get_args():
     
     # parse str to boolean
     str_true = ["Y", "y", "Yes", "yes", "true", "True"]
-    bool_params = ["download_datasets", "init_generator_weights", "init_discriminator_weights"]
+    bool_params = []
     for param in bool_params:
         if args[param] in str_true:
             args[param] = True
