@@ -47,4 +47,4 @@ if __name__ == "__main__":
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     logging.info(f"Device: {device}")
 
-    model = train_model(device, args["n_epochs"], args["batch_size"], args["dataset_name"], args["batch_size"], args["model_type"])
+    model = train_model(device, args["n_epochs"], args["dataset_name"], args["batch_size"], args["model_type"])
