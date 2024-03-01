@@ -59,12 +59,14 @@ class MoleculeDataset(Dataset):
             Path where dataset should be downloaded or where is it already stored
         '''
 
-        main_dir_path = f"{root_datasets_dir}/{dataset_name}/{split}"
-        dataset_already_downloaded = os.path.isdir(main_dir_path)
-        smiles_path = f"{main_dir_path}/smiles_{split}.npy"
-        X_path = f"{main_dir_path}/X_{split}.npy"
-        y_path = f"{main_dir_path}/y_{split}.npy"
-        w_path = f"{main_dir_path}/w_{split}.npy"
+        dataset_path = f"{root_datasets_dir}/{dataset_name}"
+        dataset_split_path = f"{dataset_path}/{split}"
+        dataset_already_downloaded = os.path.isdir(dataset_path)
+        
+        smiles_path = f"{dataset_split_path}/smiles_{split}.npy"
+        X_path = f"{dataset_split_path}/X_{split}.npy"
+        y_path = f"{dataset_split_path}/y_{split}.npy"
+        w_path = f"{dataset_split_path}/w_{split}.npy"
 
         if dataset_already_downloaded:
             smiles = np.load(smiles_path)
@@ -84,7 +86,8 @@ class MoleculeDataset(Dataset):
             else:
                 raise Exception(f"Dataset {dataset_name} not implemented.")
 
-            os.mkdir(main_dir_path)
+            os.mkdir(dataset_path)
+            os.mkdir(dataset_split_path)
 
             split_id = 0 if split == "train" else 2
             smiles, X, y, w = datasets[split_id].smiles, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
