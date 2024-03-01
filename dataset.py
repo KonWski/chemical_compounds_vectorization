@@ -41,7 +41,7 @@ class MoleculeDataset(Dataset):
         return extra_features
 
 
-    def _prepare_dc_datasets(dataset_name: str, split: str, featurizer: str, download_dataset: bool, root_datasets_dir: str):
+    def _prepare_dc_datasets(self, dataset_name: str, split: str, featurizer: str, download_dataset: bool, root_datasets_dir: str):
         '''
         Downloads dataset from Deepchem MoleculeNet
         
