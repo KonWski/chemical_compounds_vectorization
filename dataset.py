@@ -2,21 +2,25 @@ import deepchem as dc
 from mat_data_utils import load_data_from_smiles
 import numpy as np
 from torch.utils.data import Dataset
+import os
 
 class MoleculeDataset(Dataset):
 
-    def __init__(self, dc_dataset_name: str, featurizer: str, prepare_data_for_mat: bool, dc_dataset) -> None:
+    def __init__(self, dc_dataset_name: str, split: str, featurizer: str, prepare_data_for_mat: bool,
+                 download_dataset: bool = False, root_datasets_dir: str="") -> None:
         self.dc_dataset_name = dc_dataset_name
         self.featurizer = featurizer
-        self.smiles = dc_dataset.ids
-        self.vectorized_molecules = dc_dataset.X
-        self.labels = dc_dataset.y
+        self.prepare_data_for_mat = prepare_data_for_mat
+
+        self.smiles, self.vectorized_molecules, self.labels, self.w = self._prepare_dc_datasets(dc_dataset_name, split, featurizer, 
+                                                                                        download_dataset, root_datasets_dir)
+
         self.node_features = None
         self.adjacency_matrix = None
         self.distance_matrices = None
 
         if prepare_data_for_mat:
-            extra_features = self._prepare_dataset_for_mat(self.smiles, self.labels)
+            extra_features = self._prepare_dataset_for_mat(self.smiles[0], self.labels[0])
 
 
     def __getitem__(self, index):
@@ -34,63 +38,57 @@ class MoleculeDataset(Dataset):
         return extra_features
 
 
+    def _prepare_dc_datasets(dataset_name: str, split: str, featurizer: str, download_dataset: bool, root_datasets_dir: str):
+        '''
+        Downloads dataset from Deepchem MoleculeNet
+        
+        Parameters
+        ----------
+        dataset_name: str
+            name of the dataset to download from repository
+        featurizer: str="ECFP"
+            type of molecule featurizer 
+        prepare_data_for_mat: bool=False
+            converts smiles representation into (node features, adjacency matrices, distance matrices)
+        download_dataset: bool=False
+            Download dataset from MoleculeNet
+        root_datasets_dir: str=""
+            Path where dataset should be downloaded or where is it already stored
+        '''
 
-def download_dataset(dataset_name: str, featurizer: str="ECFP", prepare_data_for_mat: bool=False):
-    '''
-    Downloads dataset from Deepchem MoleculeNet
-    
-    Parameters
-    ----------
-    dataset_name: str
-        name of the dataset to download from repository
-    featurizer: str="ECFP"
-        type of molecule featurizer 
-    prepare_data_for_mat: bool=False
-        converts smiles representation into (node features, adjacency matrices, distance matrices)
-    '''
+        main_dir_path = f"{root_datasets_dir}/{dataset_name}/{split}"
+        dataset_already_downloaded = os.path.isdir(main_dir_path)
+        smiles_path = f"{main_dir_path}/smiles_{split}.npy"
+        X_path = f"{main_dir_path}/X_{split}.npy"
+        y_path = f"{main_dir_path}/y_{split}.npy"
+        w_path = f"{main_dir_path}/w_{split}.npy"
 
-    if dataset_name == "HIV":
-        tasks, datasets, transformers = dc.molnet.load_hiv(featurizer=featurizer)
-    elif dataset_name == "TOX21":
-        tasks, datasets, transformers = dc.molnet.load_tox21(featurizer=featurizer)
-    elif dataset_name == "Delaney":
-        tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=featurizer)
-    else:
-        raise Exception(f"Dataset {dataset_name} not implemented.")
+        if dataset_already_downloaded:
+            smiles = np.load(smiles_path)
+            X = np.load(X_path) 
+            y = np.load(y_path)
+            w = np.load(w_path)
 
-    train_dataset = MoleculeDataset(dataset_name, featurizer, prepare_data_for_mat, datasets[0])
-    test_dataset = MoleculeDataset(dataset_name, featurizer, prepare_data_for_mat, datasets[2])
+        elif not dataset_already_downloaded and download_dataset:
+            
+            # download datasets from deepchem
+            if dataset_name == "HIV":
+                tasks, datasets, transformers = dc.molnet.load_hiv(featurizer=featurizer)
+            elif dataset_name == "TOX21":
+                tasks, datasets, transformers = dc.molnet.load_tox21(featurizer=featurizer)
+            elif dataset_name == "Delaney":
+                tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=featurizer)
+            else:
+                raise Exception(f"Dataset {dataset_name} not implemented.")
 
-    # if prepare_data_for_mat:
-    #     train_X, train_y, valid_X, valid_y, test_X, test_y = prepare_dataset_for_mat(datasets)
+            os.mkdir(main_dir_path)
 
-    return train_dataset, test_dataset
+            split_id = 0 if split == "train" else 2
+            smiles, X, y, w = datasets[split_id].smiles, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
 
+            np.save(smiles, smiles_path)
+            np.save(X, X_path)
+            np.save(y, y_path)
+            np.save(w, w_path)
 
-def prepare_dataset_for_mat(datasets, add_dummy_node=True, one_hot_formal_charge=False, use_data_saving=True):
-    '''
-    Converts smiles molecules into (node features, adjacency matrices, distance matrices)
-    which is acceptable by Molecule Attention Transformer
-
-    '''
-
-    train_dataset, valid_dataset, test_dataset = datasets
-
-    train_smiles, train_labels = train_dataset.ids, train_dataset.y
-    valid_smiles, valid_labels = valid_dataset.ids, valid_dataset.y
-    test_smiles, test_labels = test_dataset.ids, test_dataset.y
-
-    train_X, train_y = load_data_from_smiles(train_smiles, train_labels, add_dummy_node=add_dummy_node,
-                                         one_hot_formal_charge=one_hot_formal_charge)
-    
-    valid_X, valid_y = load_data_from_smiles(valid_smiles, valid_labels, add_dummy_node=add_dummy_node,
-                                        one_hot_formal_charge=one_hot_formal_charge)
-
-    test_X, test_y = load_data_from_smiles(test_smiles, test_labels, add_dummy_node=add_dummy_node,
-                                        one_hot_formal_charge=one_hot_formal_charge)
-    
-    return train_X, train_y, valid_X, valid_y, test_X, test_y
-
-
-if __name__ == "main":
-    md = download_dataset("HIV", "ECFP", True)
+        return smiles, X, y, w

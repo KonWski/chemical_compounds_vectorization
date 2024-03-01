@@ -21,7 +21,7 @@ def get_args():
     
     # parse str to boolean
     str_true = ["Y", "y", "Yes", "yes", "true", "True"]
-    bool_params = []
+    bool_params = ["download_dataset"]
     for param in bool_params:
         if args[param] in str_true:
             args[param] = True
@@ -47,4 +47,4 @@ if __name__ == "__main__":
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     logging.info(f"Device: {device}")
 
-    model = train_model(device, args["n_epochs"], args["dataset_name"], args["batch_size"], args["model_type"])
+    model = train_model(device, args["n_epochs"], args["dataset_name"], args["download_dataset"], args["root_datasets_dir"], args["batch_size"], args["model_type"])
