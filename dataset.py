@@ -90,7 +90,7 @@ class MoleculeDataset(Dataset):
             os.mkdir(dataset_split_path)
 
             split_id = 0 if split == "train" else 2
-            smiles, X, y, w = datasets[split_id].smiles, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
+            smiles, X, y, w = datasets[split_id].ids, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
             print(f"Smiles type: {type(smiles)}")
 
             np.save(smiles, smiles_path)
