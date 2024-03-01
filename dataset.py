@@ -97,8 +97,8 @@ class MoleculeDataset(Dataset):
             print(f"Smiles type: {type(smiles)}")
 
             np.save(smiles, smiles_path)
-            np.save(X, X_path)
-            np.save(y, y_path)
-            np.save(w, w_path)
+            np.save(X_path, X)
+            np.save(y_path, y)
+            np.save(w_path, w)
 
         return smiles, X, y, w
