@@ -34,7 +34,10 @@ class MoleculeDataset(Dataset):
         '''
 
         extra_features, _ = load_data_from_smiles(smiles, labels)
-                
+        print(f"node features: {type(extra_features[0])}")
+        print(f"adjacency matrices: {type(extra_features[1])}")
+        print(f"distance matrices: {type(extra_features[2])}")
+
         return extra_features
 
 
@@ -85,6 +88,7 @@ class MoleculeDataset(Dataset):
 
             split_id = 0 if split == "train" else 2
             smiles, X, y, w = datasets[split_id].smiles, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
+            print(f"Smiles type: {type(smiles)}")
 
             np.save(smiles, smiles_path)
             np.save(X, X_path)
