@@ -8,19 +8,15 @@ class MoleculeDataset(Dataset):
 
     def __init__(self, dc_dataset_name: str, split: str, featurizer: str, prepare_data_for_mat: bool,
                  download_dataset: bool = False, root_datasets_dir: str="") -> None:
+       
         self.dc_dataset_name = dc_dataset_name
+        self.split = split
         self.featurizer = featurizer
-        self.prepare_data_for_mat = prepare_data_for_mat
-
-        self.smiles, self.vectorized_molecules, self.labels, self.w = self._prepare_dc_datasets(dc_dataset_name, split, featurizer, 
-                                                                                        download_dataset, root_datasets_dir)
-
-        self.node_features = None
-        self.adjacency_matrix = None
-        self.distance_matrices = None
-
-        if prepare_data_for_mat:
-            self.node_features, self.adjacency_matrix, self.distance_matrices = self._prepare_dataset_for_mat(self.smiles[0], self.labels[0])
+        self.root_datasets_dir = root_datasets_dir
+        self.dataset_path, self.dataset_split_path = self._prepare_directories(download_dataset)
+        self.smiles, self.vectorized_molecules, self.labels, self.w = self._prepare_dc_datasets(download_dataset)
+        self.node_features, self.adjacency_matrix, \
+            self.distance_matrices = self._prepare_dataset_for_mat(prepare_data_for_mat, download_dataset)
 
 
     def __getitem__(self, index):
@@ -34,41 +30,66 @@ class MoleculeDataset(Dataset):
             return self.smiles[index], self.vectorized_molecules[index], self.labels[index], self.w[index]
 
 
-    def _prepare_dataset_for_mat(self, smiles, labels, split, root_datasets_dir):
+    def _prepare_directories(self, download_dataset):
+        
+        if download_dataset:
+            dataset_path = f"{self.root_datasets_dir}/{self.dc_dataset_name}"
+            dataset_split_path = f"{dataset_path}/{self.split}"
+            main_dir_created = os.path.isdir(dataset_path)
+
+            if not main_dir_created:
+                os.mkdir(dataset_path)
+                os.mkdir(dataset_split_path)
+
+            return dataset_path, dataset_split_path
+        
+        else:
+            return None, None
+
+
+    def _prepare_dataset_for_mat(self, prepare_data_for_mat, download_dataset):
         '''
         Converts smiles molecules into (node features, adjacency matrices, distance matrices)
         which is acceptable by Molecule Attention Transformer
         '''
 
-        dataset_split_path = f"{root_datasets_dir}/{self.dataset_name}/{split}"
-        node_features_path = ""
-        adjacency_matrices_path = ""
-        distance_matrices_path = ""
+        if not prepare_data_for_mat:
+            return None, None, None
+
+        node_features_path = f"{self.dataset_split_path}/node_features.npy"
+        adjacency_matrices_path = f"{self.dataset_split_path}/adjacency_matrices.npy"
+        distance_matrices_path = f"{self.dataset_split_path}/distance_matrices.npy"
 
         extra_features_already_prepared = os.path.isfile(node_features_path) and os.path.isfile(adjacency_matrices_path) \
             and os.path.isfile(distance_matrices_path)
 
-        molecules_extra_features, _ = load_data_from_smiles(smiles, labels)
-        
-        node_features = []
-        adjacency_matrices = []
-        distance_matrices = []
-        print(f"type(extra_features): {type(molecules_extra_features)}")
-        print(f"len(extra_features): {len(molecules_extra_features)}")
-        print(f"node features: {type(molecules_extra_features[0][0])}")
-        print(f"adjacency matrices: {type(molecules_extra_features[0][1])}")
-        print(f"distance matrices: {type(molecules_extra_features[0][2])}")
+        if extra_features_already_prepared and download_dataset:
+            node_features = np.load(node_features_path, allow_pickle=True)
+            adjacency_matrices = np.load(adjacency_matrices_path, allow_pickle=True) 
+            distance_matrices = np.load(distance_matrices_path, allow_pickle=True) 
 
-        # collect all extra features into lists
-        for extra_features in molecules_extra_features:
-            node_features.append(extra_features[0])
-            adjacency_matrices.append(extra_features[1])
-            distance_matrices.append(extra_features[2])
+        else:
+            molecules_extra_features, _ = load_data_from_smiles(self.smiles, self.labels)
+            
+            node_features = []
+            adjacency_matrices = []
+            distance_matrices = []
+            print(f"type(extra_features): {type(molecules_extra_features)}")
+            print(f"len(extra_features): {len(molecules_extra_features)}")
+            print(f"node features: {type(molecules_extra_features[0][0])}")
+            print(f"adjacency matrices: {type(molecules_extra_features[0][1])}")
+            print(f"distance matrices: {type(molecules_extra_features[0][2])}")
+
+            # collect all extra features into lists
+            for extra_features in molecules_extra_features:
+                node_features.append(extra_features[0])
+                adjacency_matrices.append(extra_features[1])
+                distance_matrices.append(extra_features[2])
 
         return node_features, adjacency_matrices, distance_matrices
 
 
-    def _prepare_dc_datasets(self, dataset_name: str, split: str, featurizer: str, download_dataset: bool, root_datasets_dir: str):
+    def _prepare_dc_datasets(self, download_dataset: bool):
         '''
         Downloads dataset from Deepchem MoleculeNet
         
@@ -86,18 +107,12 @@ class MoleculeDataset(Dataset):
             Path where dataset should be downloaded or where is it already stored
         '''
 
-        dataset_path = f"{root_datasets_dir}/{dataset_name}"
-        dataset_split_path = f"{dataset_path}/{split}"
-        main_dir_created = os.path.isdir(dataset_path)
-        split_dataset_already_downloaded = os.path.isdir(dataset_split_path)
-
-        if not main_dir_created:
-            os.mkdir(dataset_path)
-        
-        smiles_path = f"{dataset_split_path}/smiles_{split}.npy"
-        X_path = f"{dataset_split_path}/X_{split}.npy"
-        y_path = f"{dataset_split_path}/y_{split}.npy"
-        w_path = f"{dataset_split_path}/w_{split}.npy"
+        smiles_path = f"{self.dataset_split_path}/smiles_{self.split}.npy"
+        X_path = f"{self.dataset_split_path}/X_{self.split}.npy"
+        y_path = f"{self.dataset_split_path}/y_{self.split}.npy"
+        w_path = f"{self.dataset_split_path}/w_{self.split}.npy"
+        split_dataset_already_downloaded = os.path.isfile(smiles_path) and os.path.isfile(X_path) \
+            and os.path.isfile(y_path) and os.path.isfile(w_path)
 
         if split_dataset_already_downloaded:
             smiles = np.load(smiles_path, allow_pickle=True)
@@ -108,18 +123,16 @@ class MoleculeDataset(Dataset):
         elif not split_dataset_already_downloaded and download_dataset:
             
             # download datasets from deepchem
-            if dataset_name == "HIV":
-                tasks, datasets, transformers = dc.molnet.load_hiv(featurizer=featurizer)
-            elif dataset_name == "TOX21":
-                tasks, datasets, transformers = dc.molnet.load_tox21(featurizer=featurizer)
-            elif dataset_name == "Delaney":
-                tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=featurizer)
+            if self.dataset_name == "HIV":
+                tasks, datasets, transformers = dc.molnet.load_hiv(featurizer=self.featurizer)
+            elif self.dataset_name == "TOX21":
+                tasks, datasets, transformers = dc.molnet.load_tox21(featurizer=self.featurizer)
+            elif self.dataset_name == "Delaney":
+                tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=self.featurizer)
             else:
-                raise Exception(f"Dataset {dataset_name} not implemented.")
+                raise Exception(f"Dataset {self.dataset_name} not implemented.")
 
-            os.mkdir(dataset_split_path)
-
-            split_id = 0 if split == "train" else 2
+            split_id = 0 if self.split == "train" else 2
             smiles, X, y, w = datasets[split_id].ids, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
             print(f"Smiles type: {type(smiles)}")
 
