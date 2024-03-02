@@ -86,10 +86,14 @@ class MoleculeDataset(Dataset):
 
             # collect all extra features into lists
             for extra_features in molecules_extra_features:
-                print(extra_features[0].shape)
                 node_features.append(extra_features[0])
                 adjacency_matrices.append(extra_features[1])
                 distance_matrices.append(extra_features[2])
+            
+            # stack arrays into batch like array
+            node_features = np.stack(node_features, axis=0)
+            adjacency_matrices = np.stack(adjacency_matrices, axis=0)
+            distance_matrices = np.stack(distance_matrices, axis=0)
 
         return node_features, adjacency_matrices, distance_matrices
 
