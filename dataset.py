@@ -34,6 +34,8 @@ class MoleculeDataset(Dataset):
         '''
 
         extra_features, _ = load_data_from_smiles(smiles, labels)
+        print(f"type(extra_features): {type(extra_features)}")
+        print(f"len(extra_features): {len(extra_features)}")
         print(f"node features: {type(extra_features[0])}")
         print(f"adjacency matrices: {type(extra_features[1])}")
         print(f"distance matrices: {type(extra_features[2])}")
