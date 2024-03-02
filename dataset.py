@@ -34,11 +34,15 @@ class MoleculeDataset(Dataset):
         
         if download_dataset:
             dataset_path = f"{self.root_datasets_dir}/{self.dc_dataset_name}"
-            dataset_split_path = f"{dataset_path}/{self.split}"
-            main_dir_created = os.path.isdir(dataset_path)
+            dataset_dir_created = os.path.isdir(dataset_path)
 
-            if not main_dir_created:
+            dataset_split_path = f"{dataset_path}/{self.split}"
+            dataset_split_dir_created = os.path.isdir(dataset_split_path)
+
+            if not dataset_dir_created:
                 os.mkdir(dataset_path)
+            
+            if not dataset_split_dir_created:
                 os.mkdir(dataset_split_path)
 
             return dataset_path, dataset_split_path
