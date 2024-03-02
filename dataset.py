@@ -86,6 +86,7 @@ class MoleculeDataset(Dataset):
 
             # collect all extra features into lists
             for extra_features in molecules_extra_features:
+                print(extra_features[0].shape)
                 node_features.append(extra_features[0])
                 adjacency_matrices.append(extra_features[1])
                 distance_matrices.append(extra_features[2])
