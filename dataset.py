@@ -34,11 +34,19 @@ class MoleculeDataset(Dataset):
             return self.smiles[index], self.vectorized_molecules[index], self.labels[index], self.w[index]
 
 
-    def _prepare_dataset_for_mat(self, smiles, labels):
+    def _prepare_dataset_for_mat(self, smiles, labels, split, root_datasets_dir):
         '''
         Converts smiles molecules into (node features, adjacency matrices, distance matrices)
         which is acceptable by Molecule Attention Transformer
         '''
+
+        dataset_split_path = f"{root_datasets_dir}/{self.dataset_name}/{split}"
+        node_features_path = ""
+        adjacency_matrices_path = ""
+        distance_matrices_path = ""
+
+        extra_features_already_prepared = os.path.isfile(node_features_path) and os.path.isfile(adjacency_matrices_path) \
+            and os.path.isfile(distance_matrices_path)
 
         molecules_extra_features, _ = load_data_from_smiles(smiles, labels)
         
