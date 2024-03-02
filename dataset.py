@@ -75,10 +75,10 @@ class MoleculeDataset(Dataset):
         w_path = f"{dataset_split_path}/w_{split}.npy"
 
         if split_dataset_already_downloaded:
-            smiles = np.load(smiles_path)
-            X = np.load(X_path) 
-            y = np.load(y_path)
-            w = np.load(w_path)
+            smiles = np.load(smiles_path, allow_pickle=True)
+            X = np.load(X_path, allow_pickle=True) 
+            y = np.load(y_path, allow_pickle=True)
+            w = np.load(w_path, allow_pickle=True)
 
         elif not split_dataset_already_downloaded and download_dataset:
             
