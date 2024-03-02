@@ -63,23 +63,24 @@ class MoleculeDataset(Dataset):
 
         dataset_path = f"{root_datasets_dir}/{dataset_name}"
         dataset_split_path = f"{dataset_path}/{split}"
-        dataset_already_downloaded = os.path.isdir(dataset_split_path)
+        main_dir_created = os.path.isdir(dataset_path)
+        split_dataset_already_downloaded = os.path.isdir(dataset_split_path)
 
-        print(f"dataset_path: {dataset_path}")
-        print(f"dataset_already_downloaded: {dataset_already_downloaded}")
+        if not main_dir_created:
+            os.mkdir(dataset_path)
         
         smiles_path = f"{dataset_split_path}/smiles_{split}.npy"
         X_path = f"{dataset_split_path}/X_{split}.npy"
         y_path = f"{dataset_split_path}/y_{split}.npy"
         w_path = f"{dataset_split_path}/w_{split}.npy"
 
-        if dataset_already_downloaded:
+        if split_dataset_already_downloaded:
             smiles = np.load(smiles_path)
             X = np.load(X_path) 
             y = np.load(y_path)
             w = np.load(w_path)
 
-        elif not dataset_already_downloaded and download_dataset:
+        elif not split_dataset_already_downloaded and download_dataset:
             
             # download datasets from deepchem
             if dataset_name == "HIV":
@@ -91,7 +92,6 @@ class MoleculeDataset(Dataset):
             else:
                 raise Exception(f"Dataset {dataset_name} not implemented.")
 
-            os.mkdir(dataset_path)
             os.mkdir(dataset_split_path)
 
             split_id = 0 if split == "train" else 2
