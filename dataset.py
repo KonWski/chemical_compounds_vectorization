@@ -123,11 +123,11 @@ class MoleculeDataset(Dataset):
         elif not split_dataset_already_downloaded and download_dataset:
             
             # download datasets from deepchem
-            if self.dataset_name == "HIV":
+            if self.dc_dataset_name == "HIV":
                 tasks, datasets, transformers = dc.molnet.load_hiv(featurizer=self.featurizer)
-            elif self.dataset_name == "TOX21":
+            elif self.dc_dataset_name == "TOX21":
                 tasks, datasets, transformers = dc.molnet.load_tox21(featurizer=self.featurizer)
-            elif self.dataset_name == "Delaney":
+            elif self.dc_dataset_name == "Delaney":
                 tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=self.featurizer)
             else:
                 raise Exception(f"Dataset {self.dataset_name} not implemented.")
