@@ -24,7 +24,14 @@ class MoleculeDataset(Dataset):
 
 
     def __getitem__(self, index):
-        raise NotImplementedError
+
+        # extra features generated
+        if self.prepare_data_for_mat:
+            return self.smiles[index], self.vectorized_molecules[index], self.labels[index], self.w[index], \
+                self.node_features[index], self.adjacency_matrix[index], self.distance_matrices[index]
+
+        else:
+            return self.smiles[index], self.vectorized_molecules[index], self.labels[index], self.w[index]
 
 
     def _prepare_dataset_for_mat(self, smiles, labels):
