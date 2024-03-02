@@ -20,7 +20,7 @@ class MoleculeDataset(Dataset):
         self.distance_matrices = None
 
         if prepare_data_for_mat:
-            extra_features = self._prepare_dataset_for_mat(self.smiles[0], self.labels[0])
+            self.node_features, self.adjacency_matrix, self.distance_matrices = self._prepare_dataset_for_mat(self.smiles[0], self.labels[0])
 
 
     def __getitem__(self, index):
@@ -33,14 +33,24 @@ class MoleculeDataset(Dataset):
         which is acceptable by Molecule Attention Transformer
         '''
 
-        extra_features, _ = load_data_from_smiles(smiles, labels)
-        print(f"type(extra_features): {type(extra_features)}")
-        print(f"len(extra_features): {len(extra_features)}")
-        print(f"node features: {type(extra_features[0][0])}")
-        print(f"adjacency matrices: {type(extra_features[0][1])}")
-        print(f"distance matrices: {type(extra_features[0][2])}")
+        molecules_extra_features, _ = load_data_from_smiles(smiles, labels)
+        
+        node_features = []
+        adjacency_matrices = []
+        distance_matrices = []
+        print(f"type(extra_features): {type(molecules_extra_features)}")
+        print(f"len(extra_features): {len(molecules_extra_features)}")
+        print(f"node features: {type(molecules_extra_features[0][0])}")
+        print(f"adjacency matrices: {type(molecules_extra_features[0][1])}")
+        print(f"distance matrices: {type(molecules_extra_features[0][2])}")
 
-        return extra_features
+        # collect all extra features into lists
+        for extra_features in molecules_extra_features:
+            node_features.append(extra_features[0])
+            adjacency_matrices.append(extra_features[1])
+            distance_matrices.append(extra_features[2])
+
+        return node_features, adjacency_matrices, distance_matrices
 
 
     def _prepare_dc_datasets(self, dataset_name: str, split: str, featurizer: str, download_dataset: bool, root_datasets_dir: str):
