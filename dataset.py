@@ -63,7 +63,7 @@ class MoleculeDataset(Dataset):
 
         dataset_path = f"{root_datasets_dir}/{dataset_name}"
         dataset_split_path = f"{dataset_path}/{split}"
-        dataset_already_downloaded = os.path.isdir(dataset_path)
+        dataset_already_downloaded = os.path.isdir(dataset_split_path)
 
         print(f"dataset_path: {dataset_path}")
         print(f"dataset_already_downloaded: {dataset_already_downloaded}")
