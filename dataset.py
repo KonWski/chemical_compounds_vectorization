@@ -68,7 +68,7 @@ class MoleculeDataset(Dataset):
         extra_features_already_prepared = os.path.isfile(node_features_path) and os.path.isfile(adjacency_matrices_path) \
             and os.path.isfile(distance_matrices_path)
 
-        if extra_features_already_prepared and download_dataset:
+        if not extra_features_already_prepared and download_dataset:
 
             with open(node_features_path, "rb") as fp:
                 pickle.dump(node_features, fp)
