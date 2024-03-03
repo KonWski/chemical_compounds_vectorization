@@ -3,6 +3,7 @@ from mat_data_utils import load_data_from_smiles
 import numpy as np
 from torch.utils.data import Dataset
 import os
+import pickle
 
 class MoleculeDataset(Dataset):
 
@@ -68,9 +69,15 @@ class MoleculeDataset(Dataset):
             and os.path.isfile(distance_matrices_path)
 
         if extra_features_already_prepared and download_dataset:
-            node_features = np.load(node_features_path, allow_pickle=True)
-            adjacency_matrices = np.load(adjacency_matrices_path, allow_pickle=True) 
-            distance_matrices = np.load(distance_matrices_path, allow_pickle=True) 
+
+            with open(node_features_path, "rb") as fp:
+                pickle.dump(node_features, fp)
+
+            with open(adjacency_matrices_path, "rb") as fp:
+                pickle.dump(adjacency_matrices, fp)
+
+            with open(distance_matrices_path, "rb") as fp:
+                pickle.dump(distance_matrices, fp)
 
         else:
             molecules_extra_features, _ = load_data_from_smiles(self.smiles, self.labels)
@@ -84,17 +91,21 @@ class MoleculeDataset(Dataset):
             print(f"adjacency matrices: {type(molecules_extra_features[0][1])}")
             print(f"distance matrices: {type(molecules_extra_features[0][2])}")
 
+            with open(node_features_path, "rb") as fp:
+                node_features = pickle.load(fp)
+
+            with open(adjacency_matrices_path, "rb") as fp:
+                adjacency_matrices = pickle.load(fp)
+
+            with open(distance_matrices_path, "rb") as fp:
+                distance_matrices = pickle.load(fp)
+
             # collect all extra features into lists
             for extra_features in molecules_extra_features:
                 node_features.append(extra_features[0])
                 adjacency_matrices.append(extra_features[1])
                 distance_matrices.append(extra_features[2])
             
-            # stack arrays into batch like array
-            node_features = np.stack(node_features, axis=0)
-            adjacency_matrices = np.stack(adjacency_matrices, axis=0)
-            distance_matrices = np.stack(distance_matrices, axis=0)
-
         return node_features, adjacency_matrices, distance_matrices
 
 
