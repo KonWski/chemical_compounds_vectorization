@@ -100,13 +100,13 @@ class MoleculeDataset(Dataset):
 
             if download_dataset:
 
-                with open(node_features_path, "rb") as fp:
+                with open(node_features_path, "wb") as fp:
                     pickle.dump(node_features, fp)
 
-                with open(adjacency_matrices_path, "rb") as fp:
+                with open(adjacency_matrices_path, "wb") as fp:
                     pickle.dump(adjacency_matrices, fp)
 
-                with open(distance_matrices_path, "rb") as fp:
+                with open(distance_matrices_path, "wb") as fp:
                     pickle.dump(distance_matrices, fp)
 
         return node_features, adjacency_matrices, distance_matrices
