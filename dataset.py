@@ -68,18 +68,19 @@ class MoleculeDataset(Dataset):
         extra_features_already_prepared = os.path.isfile(node_features_path) and os.path.isfile(adjacency_matrices_path) \
             and os.path.isfile(distance_matrices_path)
 
-        if not extra_features_already_prepared and download_dataset:
+        if extra_features_already_prepared:
 
             with open(node_features_path, "rb") as fp:
-                pickle.dump(node_features, fp)
+                node_features = pickle.load(fp)
 
             with open(adjacency_matrices_path, "rb") as fp:
-                pickle.dump(adjacency_matrices, fp)
+                adjacency_matrices = pickle.load(fp)
 
             with open(distance_matrices_path, "rb") as fp:
-                pickle.dump(distance_matrices, fp)
+                distance_matrices = pickle.load(fp)
 
         else:
+
             molecules_extra_features, _ = load_data_from_smiles(self.smiles, self.labels)
             
             node_features = []
@@ -91,21 +92,23 @@ class MoleculeDataset(Dataset):
             print(f"adjacency matrices: {type(molecules_extra_features[0][1])}")
             print(f"distance matrices: {type(molecules_extra_features[0][2])}")
 
-            with open(node_features_path, "rb") as fp:
-                node_features = pickle.load(fp)
-
-            with open(adjacency_matrices_path, "rb") as fp:
-                adjacency_matrices = pickle.load(fp)
-
-            with open(distance_matrices_path, "rb") as fp:
-                distance_matrices = pickle.load(fp)
-
             # collect all extra features into lists
             for extra_features in molecules_extra_features:
                 node_features.append(extra_features[0])
                 adjacency_matrices.append(extra_features[1])
                 distance_matrices.append(extra_features[2])
-            
+
+            if download_dataset:
+
+                with open(node_features_path, "rb") as fp:
+                    pickle.dump(node_features, fp)
+
+                with open(adjacency_matrices_path, "rb") as fp:
+                    pickle.dump(adjacency_matrices, fp)
+
+                with open(distance_matrices_path, "rb") as fp:
+                    pickle.dump(distance_matrices, fp)
+
         return node_features, adjacency_matrices, distance_matrices
 
 
@@ -140,7 +143,7 @@ class MoleculeDataset(Dataset):
             y = np.load(y_path, allow_pickle=True)
             w = np.load(w_path, allow_pickle=True)
 
-        elif not split_dataset_already_downloaded and download_dataset:
+        else:
             
             # download datasets from deepchem
             if self.dc_dataset_name == "HIV":
@@ -156,9 +159,10 @@ class MoleculeDataset(Dataset):
             smiles, X, y, w = datasets[split_id].ids, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
             print(f"Smiles type: {type(smiles)}")
 
-            np.save(smiles_path, smiles)
-            np.save(X_path, X)
-            np.save(y_path, y)
-            np.save(w_path, w)
+            if download_dataset:
+                np.save(smiles_path, smiles)
+                np.save(X_path, X)
+                np.save(y_path, y)
+                np.save(w_path, w)
 
         return smiles, X, y, w
