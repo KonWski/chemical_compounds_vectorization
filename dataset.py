@@ -31,6 +31,10 @@ class MoleculeDataset(Dataset):
             return self.smiles[index], self.vectorized_molecules[index], self.labels[index], self.w[index]
 
 
+    def __len__(self) -> int:
+        return len(self.smiles)
+
+
     def _prepare_directories(self, download_dataset):
         
         if download_dataset:
