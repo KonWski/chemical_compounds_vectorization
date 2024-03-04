@@ -62,4 +62,7 @@ def train_model(
                 with torch.set_grad_enabled(state == 'train'):
                     
                     adjacency_matrix, node_features, distance_matrix, y = batch
-
+                break
+            break
+        
+        break

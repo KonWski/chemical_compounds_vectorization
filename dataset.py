@@ -176,7 +176,8 @@ class MoleculeDataset(Dataset):
 def collate_extra_features(batch):
 
     print(f"type(batch): {type(batch)}")
-    
+    print(f"len(batch): {len(batch)}")
+
     # adjacency_list, distance_list, features_list = [], [], []
     # labels = []
 
