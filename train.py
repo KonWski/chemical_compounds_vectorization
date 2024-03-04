@@ -1,9 +1,8 @@
-from dataset import MoleculeDataset
+from dataset import MoleculeDataset, collate_extra_features
 import torch
 from torch.optim import Adam
 from torch.nn import BCELoss, CrossEntropyLoss
 import logging
-
 
 def train_model(
         device, 
@@ -34,10 +33,10 @@ def train_model(
 
     # datasets and dataloaders
     trainset = MoleculeDataset(dataset_name, "train", "ECFP", True, download_dataset, root_datasets_dir)
-    train_loader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True)
+    train_loader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, collate_fn=collate_extra_features, shuffle=True)
 
     testset = MoleculeDataset(dataset_name, "test", "ECFP", True, download_dataset, root_datasets_dir)
-    test_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, collate_fn=collate_extra_features, shuffle=True)
 
     # number of observations
     len_train_dataset = len(trainset)
