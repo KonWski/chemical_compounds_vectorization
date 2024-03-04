@@ -13,11 +13,12 @@ class MoleculeDataset(Dataset):
         self.dc_dataset_name = dc_dataset_name
         self.split = split
         self.featurizer = featurizer
+        self.prepare_data_for_mat = prepare_data_for_mat
         self.root_datasets_dir = root_datasets_dir
         self.dataset_path, self.dataset_split_path = self._prepare_directories(download_dataset)
         self.smiles, self.vectorized_molecules, self.labels, self.w = self._prepare_dc_datasets(download_dataset)
         self.node_features, self.adjacency_matrix, \
-            self.distance_matrices = self._prepare_dataset_for_mat(prepare_data_for_mat, download_dataset)
+            self.distance_matrices = self._prepare_dataset_for_mat(download_dataset)
 
 
     def __getitem__(self, index):
@@ -56,13 +57,13 @@ class MoleculeDataset(Dataset):
             return None, None
 
 
-    def _prepare_dataset_for_mat(self, prepare_data_for_mat, download_dataset):
+    def _prepare_dataset_for_mat(self, download_dataset):
         '''
         Converts smiles molecules into (node features, adjacency matrices, distance matrices)
         which is acceptable by Molecule Attention Transformer
         '''
 
-        if not prepare_data_for_mat:
+        if not self.prepare_data_for_mat:
             return None, None, None
 
         node_features_path = f"{self.dataset_split_path}/node_features.npy"
