@@ -1,9 +1,10 @@
 import deepchem as dc
 from mat_data_utils import load_data_from_smiles
 import numpy as np
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, Sampler
 import os
 import pickle
+from torch.utils.data import DataLoader
 
 class MoleculeDataset(Dataset):
 
@@ -173,64 +174,79 @@ class MoleculeDataset(Dataset):
         return smiles, X, y, w
 
 
-def collate_extra_features(batch, prepare_data_for_mat: bool):
+class MoleculeDataLoader(DataLoader):
 
-    # print(f"type(batch): {type(batch)}")
-    # print(f"len(batch): {len(batch)}")
-    # print(f"type(batch[0]): {type(batch[0])}")
-    # print(f"len(batch[0]): {len(batch[0])}")
-    # print(f"type(batch[0][0]): {type(batch[0][0])}")
-    # print(f"batch[0][0]: {batch[0][0]}")
-    # print(f"type(batch[0][1]): {type(batch[0][1])}")
+    def __init__(self, dataset, batch_size, shuffle, sampler, batch_sampler, num_workers, collate_fn, pin_memory, drop_last, 
+                 timeout, worker_init_fn, multiprocessing_context, generator, prefetch_factor, persistent_workers):
+
+        if dataset.prepare_data_for_mat and collate_fn is None:
+            collate_fn = self._collate_extra_features
 
 
-    if prepare_data_for_mat:
+        super().__init__(dataset, batch_size, shuffle, sampler, batch_sampler, num_workers, collate_fn, pin_memory, drop_last, 
+                         timeout, worker_init_fn, multiprocessing_context, generator, prefetch_factor, persistent_workers)
 
-        smiles_list, vectorized_molecules_list, labels_list, w_list, \
-            node_features_list, adjacency_matrices_list, distance_matrices_list = [], [], [], [], [], []
+    
 
-        for molecule in batch:
+    def _collate_extra_features(self, batch):
 
-            smiles, vectorized_molecule, label, w, node_features, adjacency_matrix, distance_matrix = molecule
-            max_size = 0
-                
-            smiles_list.append(smiles)
-            vectorized_molecules_list.append(vectorized_molecule)
-            labels_list.append(label)
-            w_list.append(w)
-
-            node_features_list.append(node_features)
-            adjacency_matrices_list.append(adjacency_matrix)
-
-            if adjacency_matrix.shape[0] > max_size:
-                max_size = adjacency_matrix.shape[0]
-
-        for molecule in batch:
-            adjacency_matrices_list.append(pad_array(adjacency_matrix, (max_size, max_size)))
-            distance_matrices_list.append(pad_array(distance_matrix, (max_size, max_size)))
-            node_features_list.append(pad_array(node_features, (max_size, node_features.shape[1])))
-
-        return [smiles_list, vectorized_molecules_list, labels_list, w_list, \
-            node_features_list, adjacency_matrices_list, distance_matrices_list]
-        
-    else:
-        return batch
+        # print(f"type(batch): {type(batch)}")
+        # print(f"len(batch): {len(batch)}")
+        # print(f"type(batch[0]): {type(batch[0])}")
+        # print(f"len(batch[0]): {len(batch[0])}")
+        # print(f"type(batch[0][0]): {type(batch[0][0])}")
+        # print(f"batch[0][0]: {batch[0][0]}")
+        # print(f"type(batch[0][1]): {type(batch[0][1])}")
 
 
-def pad_array(array, shape, dtype=np.float32):
-    """Pad a 2-dimensional array with zeros.
+        if self.dataset.prepare_data_for_mat:
 
-    Args:
-        array (ndarray): A 2-dimensional array to be padded.
-        shape (tuple[int]): The desired shape of the padded array.
-        dtype (data-type): The desired data-type for the array.
+            smiles_list, vectorized_molecules_list, labels_list, w_list, \
+                node_features_list, adjacency_matrices_list, distance_matrices_list = [], [], [], [], [], []
 
-    Returns:
-        A 2-dimensional array of the given shape padded with zeros.
-    """
-    padded_array = np.zeros(shape, dtype=dtype)
-    padded_array[:array.shape[0], :array.shape[1]] = array
-    return padded_array
+            for molecule in batch:
+
+                smiles, vectorized_molecule, label, w, node_features, adjacency_matrix, distance_matrix = molecule
+                max_size = 0
+                    
+                smiles_list.append(smiles)
+                vectorized_molecules_list.append(vectorized_molecule)
+                labels_list.append(label)
+                w_list.append(w)
+
+                node_features_list.append(node_features)
+                adjacency_matrices_list.append(adjacency_matrix)
+
+                if adjacency_matrix.shape[0] > max_size:
+                    max_size = adjacency_matrix.shape[0]
+
+            for molecule in batch:
+                adjacency_matrices_list.append(self._pad_array(adjacency_matrix, (max_size, max_size)))
+                distance_matrices_list.append(self._pad_array(distance_matrix, (max_size, max_size)))
+                node_features_list.append(self._pad_array(node_features, (max_size, node_features.shape[1])))
+
+            return [smiles_list, vectorized_molecules_list, labels_list, w_list, \
+                node_features_list, adjacency_matrices_list, distance_matrices_list]
+            
+        else:
+            return batch
+
+
+    def _pad_array(self, array, shape, dtype=np.float32):
+        """Pad a 2-dimensional array with zeros.
+
+        Args:
+            array (ndarray): A 2-dimensional array to be padded.
+            shape (tuple[int]): The desired shape of the padded array.
+            dtype (data-type): The desired data-type for the array.
+
+        Returns:
+            A 2-dimensional array of the given shape padded with zeros.
+        """
+        padded_array = np.zeros(shape, dtype=dtype)
+        padded_array[:array.shape[0], :array.shape[1]] = array
+        return padded_array
+
 
 
 def mol_collate_func(batch):
