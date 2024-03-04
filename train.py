@@ -1,7 +1,7 @@
 from dataset import MoleculeDataset
 import torch
 from torch.optim import Adam
-from torch.nn import BCELoss
+from torch.nn import BCELoss, CrossEntropyLoss
 import logging
 
 
@@ -31,13 +31,36 @@ def train_model(
         type of model which will be trained
     '''
 
-    if dataset_name == "":
-        prepare_data_for_mat = False
-    else:
-        prepare_data_for_mat = False
 
     # datasets and dataloaders
-    train_dataset = MoleculeDataset(dataset_name, "train", "ECFP", True, download_dataset, root_datasets_dir)
-    test_dataset = MoleculeDataset(dataset_name, "test", "ECFP", True, download_dataset, root_datasets_dir)
+    trainset = MoleculeDataset(dataset_name, "train", "ECFP", True, download_dataset, root_datasets_dir)
+    train_loader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True)
 
-    
+    testset = MoleculeDataset(dataset_name, "test", "ECFP", True, download_dataset, root_datasets_dir)
+    test_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=True)
+
+    # number of observations
+    len_train_dataset = len(trainset)
+    len_test_dataset = len(testset)
+
+    for epoch in range(n_epochs):
+
+        for state, loader, len_dataset in zip(["train", "test"], [train_loader, test_loader], [len_train_dataset, len_test_dataset]):
+
+            # calculated parameters
+            running_loss = 0.0
+            running_corrects = 0
+
+            criterion = CrossEntropyLoss()
+
+            # if state == "train":
+            #     model.train()
+            # else:
+            #     model.eval()
+
+            for id, batch in enumerate(loader, 0):
+
+                with torch.set_grad_enabled(state == 'train'):
+                    
+                    adjacency_matrix, node_features, distance_matrix, y = batch
+
