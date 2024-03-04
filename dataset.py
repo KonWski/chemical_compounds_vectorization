@@ -177,6 +177,7 @@ def collate_extra_features(batch):
 
     print(f"type(batch): {type(batch)}")
     print(f"len(batch): {len(batch)}")
+    print(f"type(batch[0]): {type(batch[0])}")
 
     # adjacency_list, distance_list, features_list = [], [], []
     # labels = []
