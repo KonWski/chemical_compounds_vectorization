@@ -173,34 +173,49 @@ class MoleculeDataset(Dataset):
         return smiles, X, y, w
 
 
-def collate_extra_features(batch):
+def collate_extra_features(batch, prepare_data_for_mat: bool):
 
-    print(f"type(batch): {type(batch)}")
-    print(f"len(batch): {len(batch)}")
-    print(f"type(batch[0]): {type(batch[0])}")
-    print(f"len(batch[0]): {len(batch[0])}")
-    print(f"type(batch[0][0]): {type(batch[0][0])}")
-    print(f"batch[0][0]: {batch[0][0]}")
-    print(f"type(batch[0][1]): {type(batch[0][1])}")
+    # print(f"type(batch): {type(batch)}")
+    # print(f"len(batch): {len(batch)}")
+    # print(f"type(batch[0]): {type(batch[0])}")
+    # print(f"len(batch[0]): {len(batch[0])}")
+    # print(f"type(batch[0][0]): {type(batch[0][0])}")
+    # print(f"batch[0][0]: {batch[0][0]}")
+    # print(f"type(batch[0][1]): {type(batch[0][1])}")
 
-    # adjacency_list, distance_list, features_list = [], [], []
-    # labels = []
 
-    # max_size = 0
-    # for molecule in batch:
-    #     if type(molecule.y[0]) == np.ndarray:
-    #         labels.append(molecule.y[0])
-    #     else:
-    #         labels.append(molecule.y)
-    #     if molecule.adjacency_matrix.shape[0] > max_size:
-    #         max_size = molecule.adjacency_matrix.shape[0]
+    if prepare_data_for_mat:
 
-    # for molecule in batch:
-    #     adjacency_list.append(pad_array(molecule.adjacency_matrix, (max_size, max_size)))
-    #     distance_list.append(pad_array(molecule.distance_matrix, (max_size, max_size)))
-    #     features_list.append(pad_array(molecule.node_features, (max_size, molecule.node_features.shape[1])))
+        smiles_list, vectorized_molecules_list, labels_list, w_list, \
+            node_features_list, adjacency_matrices_list, distance_matrices_list = [], [], [], [], [], []
 
-    return batch
+        for molecule in batch:
+
+            smiles, vectorized_molecule, label, w, node_features, adjacency_matrix, distance_matrix = molecule
+            max_size = 0
+                
+            smiles_list.append(smiles)
+            vectorized_molecules_list.append(vectorized_molecule)
+            labels_list.append(label)
+            w_list.append(w)
+
+            node_features_list.append(node_features)
+            adjacency_matrices_list.append(adjacency_matrix)
+
+            if adjacency_matrix.shape[0] > max_size:
+                max_size = adjacency_matrix.shape[0]
+
+        for molecule in batch:
+            adjacency_matrices_list.append(pad_array(adjacency_matrix, (max_size, max_size)))
+            distance_matrices_list.append(pad_array(distance_matrix, (max_size, max_size)))
+            node_features_list.append(pad_array(node_features, (max_size, node_features.shape[1])))
+
+        return [smiles_list, vectorized_molecules_list, labels_list, w_list, \
+            node_features_list, adjacency_matrices_list, distance_matrices_list]
+        
+    else:
+        return batch
+
 
 def pad_array(array, shape, dtype=np.float32):
     """Pad a 2-dimensional array with zeros.
