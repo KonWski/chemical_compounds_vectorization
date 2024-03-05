@@ -15,7 +15,7 @@ def get_args():
     parser.add_argument('--download_dataset', type=str, help='Download dataset from MoleculeNet')
 
     parser.add_argument('--model_type', type=str, help="type of model which will be trained", 
-                        choices=["message_passing_neural_network", "mol2vec"])    
+                        choices=["mat", "mol2vec"])    
 
     args = vars(parser.parse_args())
     
