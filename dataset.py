@@ -211,7 +211,7 @@ class MoleculeDataLoader(DataLoader):
         if self.dataset.prepare_data_for_mat:
 
             smiles_list, vectorized_molecules_list, labels_list, w_list, \
-                node_features_list, adjacency_matrices_list, distance_matrices_list = [], [], [], [], [], []
+                node_features_list, adjacency_matrices_list, distance_matrices_list = [], [], [], [], [], [], []
 
             for molecule in batch:
 
