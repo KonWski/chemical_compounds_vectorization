@@ -186,26 +186,14 @@ class MoleculeDataLoader(DataLoader):
                  dataset: Dataset[T_co], 
                  batch_size: Optional[int] = 1,
                  shuffle: Optional[bool] = None, 
-                 sampler: Union[Sampler, Iterable, None] = None,
-                 batch_sampler: Union[Sampler[List], Iterable[List], None] = None,
-                 num_workers: int = 0, 
-                 collate_fn: Optional[_collate_fn_t] = None,
-                 pin_memory: bool = False, 
-                 drop_last: bool = False,
-                 timeout: float = 0, 
-                 worker_init_fn: Optional[_worker_init_fn_t] = None,
-                 multiprocessing_context=None, 
-                 generator=None,
-                 *, 
-                 prefetch_factor: Optional[int] = None,
-                 persistent_workers: bool = False,
-                 pin_memory_device: str = ""):
+                 collate_fn: Optional[_collate_fn_t] = None):
 
-        super().__init__(dataset, batch_size, shuffle, sampler, batch_sampler, num_workers, collate_fn, pin_memory, drop_last, 
-                         timeout, worker_init_fn, multiprocessing_context, generator, prefetch_factor, persistent_workers)
+        super().__init__(dataset, batch_size, shuffle)
 
         if dataset.prepare_data_for_mat and collate_fn is None:
             self.collate_fn = self._collate_extra_features
+        else:
+            self.collate_fn = self.collate_fn
 
     
 
