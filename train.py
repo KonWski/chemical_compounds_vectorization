@@ -4,6 +4,7 @@ from torch.optim import Adam
 from torch.nn import BCELoss, CrossEntropyLoss
 import logging
 import yaml
+from pathlib import Path
 
 def train_model(
         device, 
@@ -44,7 +45,7 @@ def train_model(
     len_test_dataset = len(testset)
 
     # model loading
-    with open(f'model_params/{model_type}.yaml', 'r') as yaml_config:
+    with open(f'{Path(__file__).parent}/model_params/{model_type}.yaml', 'r') as yaml_config:
         model_params = yaml.safe_load(yaml_config)
 
     print(model_params)
