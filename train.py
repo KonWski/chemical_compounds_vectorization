@@ -3,6 +3,7 @@ import torch
 from torch.optim import Adam
 from torch.nn import BCELoss, CrossEntropyLoss
 import logging
+import yaml
 
 def train_model(
         device, 
@@ -41,6 +42,12 @@ def train_model(
     # number of observations
     len_train_dataset = len(trainset)
     len_test_dataset = len(testset)
+
+    # model loading
+    with open(f'model_params/{model_type}.yaml', 'r') as yaml_config:
+        model_params = yaml.safe_load(yaml_config)
+
+    print(model_params)
 
     for epoch in range(n_epochs):
 
