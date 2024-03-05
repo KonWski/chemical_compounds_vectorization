@@ -45,7 +45,7 @@ def train_model(
     len_test_dataset = len(testset)
 
     # model loading
-    with open(f'{Path(__file__).parent}/model_params/{model_type}.yaml', 'r') as yaml_config:
+    with open(f'{Path(__file__).parent}/models_params/{model_type}.yaml', 'r') as yaml_config:
         model_params = yaml.safe_load(yaml_config)
 
     print(model_params)
