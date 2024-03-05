@@ -61,9 +61,7 @@ def train_model(
 
                 with torch.set_grad_enabled(state == 'train'):
                     
-                    print(f"type(batch): {type(batch)}")
-                    print(f"len(batch): {len(batch)}")
-                    adjacency_matrix, node_features, distance_matrix, y = batch
+                    smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
                 break
             break
         
