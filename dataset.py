@@ -130,9 +130,9 @@ class MoleculeDataset(Dataset):
         # print(f"np.array(adjacency_matrices).shape: {np.array(adjacency_matrices).shape}")
         # print(f"np.array(distance_matrices).shape: {np.array(distance_matrices).shape}")
 
-        # node_features = torch.Tensor(np.stack(node_features, axis=0)) 
-        # adjacency_matrices = torch.Tensor(np.stack(adjacency_matrices, axis=0)) 
-        # distance_matrices = torch.Tensor(np.stack(distance_matrices, axis=0)) 
+        node_features = torch.Tensor(np.stack(node_features, axis=0)) 
+        adjacency_matrices = torch.Tensor(np.stack(adjacency_matrices, axis=0)) 
+        distance_matrices = torch.Tensor(np.stack(distance_matrices, axis=0)) 
 
         return node_features, adjacency_matrices, distance_matrices
 
