@@ -130,9 +130,6 @@ class MoleculeDataset(Dataset):
         # print(f"np.array(adjacency_matrices).shape: {np.array(adjacency_matrices).shape}")
         # print(f"np.array(distance_matrices).shape: {np.array(distance_matrices).shape}")
 
-        # for nf in node_features:
-        #     print(nf.shape)
-
         # node_features = torch.Tensor(np.stack(node_features, axis=0)) 
         # adjacency_matrices = torch.Tensor(np.stack(adjacency_matrices, axis=0)) 
         # distance_matrices = torch.Tensor(np.stack(distance_matrices, axis=0)) 
@@ -249,6 +246,9 @@ class MoleculeDataLoader(DataLoader):
                     max_size = adjacency_matrix.shape[0]
 
             for molecule in batch:
+
+                print(f"node_features.shape: {node_features.shape}")
+                print(f"max_size: {max_size}")
                 adjacency_matrices_list.append(self._pad_array(adjacency_matrix, (max_size, max_size)))
                 distance_matrices_list.append(self._pad_array(distance_matrix, (max_size, max_size)))
                 node_features_list.append(self._pad_array(node_features, (max_size, node_features.shape[1])))
@@ -271,6 +271,7 @@ class MoleculeDataLoader(DataLoader):
         Returns:
             A 2-dimensional array of the given shape padded with zeros.
         """
+        print(f"_pad_array shape: {shape}")
         padded_array = np.zeros(shape, dtype=dtype)
         padded_array[:array.shape[0], :array.shape[1]] = array
         return padded_array
