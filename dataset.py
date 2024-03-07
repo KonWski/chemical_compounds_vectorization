@@ -123,6 +123,9 @@ class MoleculeDataset(Dataset):
                     pickle.dump(distance_matrices, fp)
 
         # convert outputs to tensors
+        print(f"node_features[0].shape: {node_features[0].shape}")
+        print(f"node_features[1].shape: {node_features[1].shape}")
+
         print(f"np.array(node_features).shape: {np.array(node_features).shape}")
         print(f"np.array(adjacency_matrices).shape: {np.array(adjacency_matrices).shape}")
         print(f"np.array(distance_matrices).shape: {np.array(distance_matrices).shape}")
