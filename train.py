@@ -5,6 +5,7 @@ from torch.nn import BCELoss, CrossEntropyLoss
 import logging
 import yaml
 from pathlib import Path
+from mat_model import make_model
 
 def train_model(
         device, 
@@ -48,7 +49,7 @@ def train_model(
     with open(f'{Path(__file__).parent}/models_params/{model_type}.yaml', 'r') as yaml_config:
         model_params = yaml.safe_load(yaml_config)
 
-    print(model_params)
+    model = make_model(**model_params)
 
     for epoch in range(n_epochs):
 
@@ -60,16 +61,19 @@ def train_model(
 
             criterion = CrossEntropyLoss()
 
-            # if state == "train":
-            #     model.train()
-            # else:
-            #     model.eval()
+            if state == "train":
+                model.train()
+            else:
+                model.eval()
 
             for id, batch in enumerate(loader, 0):
 
                 with torch.set_grad_enabled(state == 'train'):
                     
                     smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
+                    batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
+                    output = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
+
                 break
             break
         
