@@ -48,6 +48,7 @@ def train_model(
     # model loading
     with open(f'{Path(__file__).parent}/models_params/{model_type}.yaml', 'r') as yaml_config:
         model_params = yaml.safe_load(yaml_config)
+        model_params["d_atom"] = trainset.node_features[0].shape[1]
 
     model = make_model(**model_params)
 
