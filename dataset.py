@@ -6,6 +6,7 @@ import os
 import pickle
 from torch.utils.data import DataLoader
 from typing import Any, Callable, Iterable, TypeVar, List, Optional, Union
+import torch
 
 T_co = TypeVar('T_co', covariant=True)
 T = TypeVar('T')
@@ -120,6 +121,11 @@ class MoleculeDataset(Dataset):
 
                 with open(distance_matrices_path, "wb") as fp:
                     pickle.dump(distance_matrices, fp)
+
+        # convert outputs to tensors
+        node_features = torch.Tensor(np.array(node_features)) 
+        adjacency_matrices = torch.Tensor(np.array(adjacency_matrices)) 
+        distance_matrices = torch.Tensor(np.array(distance_matrices)) 
 
         return node_features, adjacency_matrices, distance_matrices
 
