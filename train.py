@@ -73,7 +73,7 @@ def train_model(
                     
                     smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
                     for fn in node_features:
-                        print(f"fn.shape")
+                        print(f"fn.shape: {fn.shape}")
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
                     output = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
 
