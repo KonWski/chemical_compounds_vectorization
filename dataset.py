@@ -227,10 +227,11 @@ class MoleculeDataLoader(DataLoader):
             smiles_list, vectorized_molecules_list, labels_list, w_list, \
                 node_features_list, adjacency_matrices_list, distance_matrices_list = [], [], [], [], [], [], []
 
+            max_size = 0
+
             for molecule in batch:
 
                 smiles, vectorized_molecule, label, w, node_features, adjacency_matrix, distance_matrix = molecule
-                max_size = 0
                     
                 smiles_list.append(smiles)
                 vectorized_molecules_list.append(vectorized_molecule)
