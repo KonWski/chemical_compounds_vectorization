@@ -224,6 +224,7 @@ class MoleculeDataLoader(DataLoader):
         # print(f"batch[0][0]: {batch[0][0]}")
         # print(f"type(batch[0][1]): {type(batch[0][1])}")
 
+        print("_collate_extra_features")
 
         if self.dataset.prepare_data_for_mat:
 
