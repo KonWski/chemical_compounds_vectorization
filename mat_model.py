@@ -7,11 +7,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-from utils import xavier_normal_small_init_, xavier_uniform_small_init_
+from mat_utils import xavier_normal_small_init_, xavier_uniform_small_init_
 
 
 ### Model definition
-
 def make_model(d_atom, N=2, d_model=128, h=8, dropout=0.1, 
                lambda_attention=0.3, lambda_distance=0.3, trainable_lambda=False,
                N_dense=2, leaky_relu_slope=0.0, aggregation_type='mean', 
