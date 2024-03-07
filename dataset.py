@@ -123,6 +123,10 @@ class MoleculeDataset(Dataset):
                     pickle.dump(distance_matrices, fp)
 
         # convert outputs to tensors
+        print(f"np.array(node_features).shape: {np.array(node_features).shape}")
+        print(f"np.array(adjacency_matrices).shape: {np.array(adjacency_matrices).shape}")
+        print(f"np.array(distance_matrices).shape: {np.array(distance_matrices).shape}")
+
         node_features = torch.Tensor(np.array(node_features)) 
         adjacency_matrices = torch.Tensor(np.array(adjacency_matrices)) 
         distance_matrices = torch.Tensor(np.array(distance_matrices)) 
