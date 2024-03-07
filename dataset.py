@@ -133,9 +133,9 @@ class MoleculeDataset(Dataset):
         # for nf in node_features:
         #     print(nf.shape)
 
-        node_features = torch.Tensor(np.stack(node_features, axis=0)) 
-        adjacency_matrices = torch.Tensor(np.stack(adjacency_matrices, axis=0)) 
-        distance_matrices = torch.Tensor(np.stack(distance_matrices, axis=0)) 
+        # node_features = torch.Tensor(np.stack(node_features, axis=0)) 
+        # adjacency_matrices = torch.Tensor(np.stack(adjacency_matrices, axis=0)) 
+        # distance_matrices = torch.Tensor(np.stack(distance_matrices, axis=0)) 
 
         return node_features, adjacency_matrices, distance_matrices
 
