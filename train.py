@@ -68,10 +68,13 @@ def train_model(
                 model.eval()
 
             for id, batch in enumerate(loader, 0):
+                
+                print(f"id: {id}")
 
                 with torch.set_grad_enabled(state == 'train'):
                     
                     smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
+                    print(f"State: {state}")
                     for fn in node_features:
                         print(f"fn.shape: {fn.shape}")
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
@@ -79,5 +82,7 @@ def train_model(
 
                 break
             break
-        
+            
+            logging.info(f"Epoch: {epoch}, state: {state}, loss: {epoch_loss}, accuracy: {epoch_acc}")
+
         break
