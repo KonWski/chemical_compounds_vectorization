@@ -76,10 +76,10 @@ def train_model(
                     smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
-                    loss = criterion(outputs, labels)
-                    
                     print(f"output: {outputs}")
                     print(f"labels: {labels}")
+                    
+                    loss = criterion(outputs, labels)
 
                     if state == "train":
                         loss.backward()
