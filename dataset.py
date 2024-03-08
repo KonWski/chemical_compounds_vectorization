@@ -239,8 +239,8 @@ class MoleculeDataLoader(DataLoader):
                 labels_list.append(label)
                 w_list.append(w)
 
-                node_features_list.append(node_features)
-                adjacency_matrices_list.append(adjacency_matrix)
+                # node_features_list.append(node_features)
+                # adjacency_matrices_list.append(adjacency_matrix)
 
                 if adjacency_matrix.shape[0] > max_size:
                     max_size = adjacency_matrix.shape[0]
