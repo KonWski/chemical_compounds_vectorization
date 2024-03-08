@@ -252,9 +252,9 @@ class MoleculeDataLoader(DataLoader):
                 node_features_list.append(self._pad_array(node_features, (max_size, node_features.shape[1])))
 
             # convert list to tensors
-            node_features = torch.Tensor(np.array(node_features)) 
-            adjacency_matrices = torch.Tensor(np.array(adjacency_matrices)) 
-            distance_matrices = torch.Tensor(np.array(distance_matrices)) 
+            node_features_list = torch.Tensor(np.array(node_features_list)) 
+            adjacency_matrices_list = torch.Tensor(np.array(adjacency_matrices_list)) 
+            distance_matrices_list = torch.Tensor(np.array(distance_matrices_list)) 
 
             return [smiles_list, vectorized_molecules_list, labels_list, w_list, \
                 node_features_list, adjacency_matrices_list, distance_matrices_list]
