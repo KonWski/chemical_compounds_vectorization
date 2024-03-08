@@ -1,7 +1,7 @@
 from dataset import MoleculeDataset, MoleculeDataLoader
 import torch
 from torch.optim import Adam
-from torch.nn import BCELoss, CrossEntropyLoss
+
 import logging
 import yaml
 from pathlib import Path
@@ -51,6 +51,7 @@ def train_model(
         model_params["d_atom"] = trainset.node_features[0].shape[1]
 
     model = make_model(**model_params)
+    optimizer = Adam(model.parameters(), lr=1e-5)
 
     for epoch in range(n_epochs):
 
@@ -58,9 +59,8 @@ def train_model(
 
             # calculated parameters
             running_loss = 0.0
-            running_corrects = 0
 
-            criterion = CrossEntropyLoss()
+            criterion = trainset.criterion
 
             if state == "train":
                 model.train()
@@ -74,16 +74,20 @@ def train_model(
                 with torch.set_grad_enabled(state == 'train'):
                     
                     smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
-
-                    for fn in node_features:
-                        print(f"fn.shape: {fn.shape}")
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
-                    output = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
-                    print(f"output: {output}")
-                    print(f"labels: {labels}")
-                break
-            break
-            
-            logging.info(f"Epoch: {epoch}, state: {state}, loss: {epoch_loss}, accuracy: {epoch_acc}")
+                    outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
+                    loss = criterion(outputs, labels)
+                    
+                    # print(f"output: {outputs}")
+                    # print(f"labels: {labels}")
 
-        break
+                    if state == "train":
+                        loss.backward()
+                        optimizer.step()
+                    
+                # statistics
+                running_loss += loss.item()
+
+            # save and log epoch statistics
+            epoch_loss = round(running_loss / len_dataset, 2)
+            logging.info(f"Epoch: {epoch}, state: {state}, loss: {epoch_loss}")

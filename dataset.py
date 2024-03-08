@@ -7,6 +7,7 @@ import pickle
 from torch.utils.data import DataLoader
 from typing import Any, Callable, Iterable, TypeVar, List, Optional, Union
 import torch
+from torch.nn import BCELoss, CrossEntropyLoss, MSELoss
 
 T_co = TypeVar('T_co', covariant=True)
 T = TypeVar('T')
@@ -27,6 +28,7 @@ class MoleculeDataset(Dataset):
         self.smiles, self.vectorized_molecules, self.labels, self.w = self._prepare_dc_datasets(download_dataset)
         self.node_features, self.adjacency_matrix, \
             self.distance_matrices = self._prepare_dataset_for_mat(download_dataset)
+        self.criterion = self._get_criterion()
 
 
     def __getitem__(self, index):
@@ -177,8 +179,6 @@ class MoleculeDataset(Dataset):
             else:
                 raise Exception(f"Dataset {self.dataset_name} not implemented.")
 
-            print(f"tasks: {tasks}")
-
             split_id = 0 if self.split == "train" else 2
             smiles, X, y, w = datasets[split_id].ids, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
             print(f"Smiles type: {type(smiles)}")
@@ -191,6 +191,11 @@ class MoleculeDataset(Dataset):
 
         return smiles, X, y, w
 
+
+    def _get_criterion(self):
+
+        if self.dc_dataset_name == "Delaney":
+            return MSELoss
 
 class MoleculeDataLoader(DataLoader):
 
