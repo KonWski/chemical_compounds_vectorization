@@ -78,8 +78,8 @@ def train_model(
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
                     loss = criterion(outputs, labels)
                     
-                    # print(f"output: {outputs}")
-                    # print(f"labels: {labels}")
+                    print(f"output: {outputs}")
+                    print(f"labels: {labels}")
 
                     if state == "train":
                         loss.backward()

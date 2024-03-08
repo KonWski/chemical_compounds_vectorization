@@ -251,11 +251,11 @@ class MoleculeDataLoader(DataLoader):
 
             for molecule in batch:
 
-                print(f"max_size: {max_size}")
+                # print(f"max_size: {max_size}")
                 adjacency_matrices_list.append(self._pad_array(adjacency_matrix, (max_size, max_size)))
                 distance_matrices_list.append(self._pad_array(distance_matrix, (max_size, max_size)))
-                print(f"[BEFORE] node_features.shape: {node_features.shape}")
-                print(f"[AFTER] _pad_array shape: {self._pad_array(node_features, (max_size, node_features.shape[1])).shape}")
+                # print(f"[BEFORE] node_features.shape: {node_features.shape}")
+                # print(f"[AFTER] _pad_array shape: {self._pad_array(node_features, (max_size, node_features.shape[1])).shape}")
                 node_features_list.append(self._pad_array(node_features, (max_size, node_features.shape[1])))
 
             # convert list to tensors
