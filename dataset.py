@@ -247,10 +247,11 @@ class MoleculeDataLoader(DataLoader):
 
             for molecule in batch:
 
-                print(f"node_features.shape: {node_features.shape}")
                 print(f"max_size: {max_size}")
                 adjacency_matrices_list.append(self._pad_array(adjacency_matrix, (max_size, max_size)))
                 distance_matrices_list.append(self._pad_array(distance_matrix, (max_size, max_size)))
+                print(f"[BEFORE] node_features.shape: {node_features.shape}")
+                print(f"[AFTER] _pad_array shape: {self._pad_array(node_features, (max_size, node_features.shape[1])).shape}")
                 node_features_list.append(self._pad_array(node_features, (max_size, node_features.shape[1])))
 
             return [smiles_list, vectorized_molecules_list, labels_list, w_list, \
@@ -271,38 +272,6 @@ class MoleculeDataLoader(DataLoader):
         Returns:
             A 2-dimensional array of the given shape padded with zeros.
         """
-        print(f"_pad_array shape: {shape}")
         padded_array = np.zeros(shape, dtype=dtype)
         padded_array[:array.shape[0], :array.shape[1]] = array
         return padded_array
-
-
-
-def mol_collate_func(batch):
-    """Create a padded batch of molecule features.
-
-    Args:
-        batch (list[Molecule]): A batch of raw molecules.
-
-    Returns:
-        A list of FloatTensors with padded molecule features:
-        adjacency matrices, node features, distance matrices, and labels.
-    """
-    adjacency_list, distance_list, features_list = [], [], []
-    labels = []
-
-    max_size = 0
-    for molecule in batch:
-        if type(molecule.y[0]) == np.ndarray:
-            labels.append(molecule.y[0])
-        else:
-            labels.append(molecule.y)
-        if molecule.adjacency_matrix.shape[0] > max_size:
-            max_size = molecule.adjacency_matrix.shape[0]
-
-    for molecule in batch:
-        adjacency_list.append(pad_array(molecule.adjacency_matrix, (max_size, max_size)))
-        distance_list.append(pad_array(molecule.distance_matrix, (max_size, max_size)))
-        features_list.append(pad_array(molecule.node_features, (max_size, molecule.node_features.shape[1])))
-
-    return [FloatTensor(features) for features in (adjacency_list, features_list, distance_list, labels)]
