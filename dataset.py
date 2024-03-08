@@ -130,9 +130,6 @@ class MoleculeDataset(Dataset):
         # print(f"np.array(adjacency_matrices).shape: {np.array(adjacency_matrices).shape}")
         # print(f"np.array(distance_matrices).shape: {np.array(distance_matrices).shape}")
 
-        # node_features = torch.Tensor(np.stack(node_features, axis=0)) 
-        # adjacency_matrices = torch.Tensor(np.stack(adjacency_matrices, axis=0)) 
-        # distance_matrices = torch.Tensor(np.stack(distance_matrices, axis=0)) 
 
         return node_features, adjacency_matrices, distance_matrices
 
@@ -253,6 +250,11 @@ class MoleculeDataLoader(DataLoader):
                 print(f"[BEFORE] node_features.shape: {node_features.shape}")
                 print(f"[AFTER] _pad_array shape: {self._pad_array(node_features, (max_size, node_features.shape[1])).shape}")
                 node_features_list.append(self._pad_array(node_features, (max_size, node_features.shape[1])))
+
+            # convert list to tensors
+            node_features = torch.Tensor(np.array(node_features)) 
+            adjacency_matrices = torch.Tensor(np.array(adjacency_matrices)) 
+            distance_matrices = torch.Tensor(np.array(distance_matrices)) 
 
             return [smiles_list, vectorized_molecules_list, labels_list, w_list, \
                 node_features_list, adjacency_matrices_list, distance_matrices_list]
