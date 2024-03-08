@@ -177,6 +177,8 @@ class MoleculeDataset(Dataset):
             else:
                 raise Exception(f"Dataset {self.dataset_name} not implemented.")
 
+            print(f"tasks: {tasks}")
+
             split_id = 0 if self.split == "train" else 2
             smiles, X, y, w = datasets[split_id].ids, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
             print(f"Smiles type: {type(smiles)}")
