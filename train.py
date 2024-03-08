@@ -74,15 +74,13 @@ def train_model(
                 with torch.set_grad_enabled(state == 'train'):
                     
                     smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
-                    print(f"State: {state}")
-                    print(f"len(node_features): {len(node_features)}")
-                    print(f"len(vectorized_molecules): {len(vectorized_molecules)}")
 
                     for fn in node_features:
                         print(f"fn.shape: {fn.shape}")
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
                     output = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
-
+                    print(f"output: {output}")
+                    print(f"labels: {labels}")
                 break
             break
             
