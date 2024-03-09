@@ -121,10 +121,10 @@ def train_model(
                 running_loss += loss.item()
 
             # save and log epoch statistics
-            checkpoint["epoch_loss"] = round(running_loss / len_dataset, 2)
-            logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['epoch_loss']}")
+            checkpoint["test_loss"] = round(running_loss / len_dataset, 2)
+            logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}")
 
-        if checkpoint["epoch_loss"] < best_test_loss:
+        if checkpoint["test_loss"] < best_test_loss:
             
             # update best test loss for further training
             best_test_loss = checkpoint["test_loss"]
