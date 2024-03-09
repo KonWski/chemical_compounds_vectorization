@@ -101,11 +101,11 @@ class MoleculeDataset(Dataset):
             node_features = []
             adjacency_matrices = []
             distance_matrices = []
-            print(f"type(extra_features): {type(molecules_extra_features)}")
-            print(f"len(extra_features): {len(molecules_extra_features)}")
-            print(f"node features: {type(molecules_extra_features[0][0])}")
-            print(f"adjacency matrices: {type(molecules_extra_features[0][1])}")
-            print(f"distance matrices: {type(molecules_extra_features[0][2])}")
+            # print(f"type(extra_features): {type(molecules_extra_features)}")
+            # print(f"len(extra_features): {len(molecules_extra_features)}")
+            # print(f"node features: {type(molecules_extra_features[0][0])}")
+            # print(f"adjacency matrices: {type(molecules_extra_features[0][1])}")
+            # print(f"distance matrices: {type(molecules_extra_features[0][2])}")
 
             # collect all extra features into lists
             for extra_features in molecules_extra_features:
@@ -125,10 +125,10 @@ class MoleculeDataset(Dataset):
                     pickle.dump(distance_matrices, fp)
 
         # convert outputs to tensors
-        print(f"node_features[0].shape: {node_features[0].shape}")
-        print(f"node_features[0]: {node_features[0]}")
-        print(f"node_features[1].shape: {node_features[1].shape}")
-        print(f"node_features[1]: {node_features[1]}")
+        # print(f"node_features[0].shape: {node_features[0].shape}")
+        # print(f"node_features[0]: {node_features[0]}")
+        # print(f"node_features[1].shape: {node_features[1].shape}")
+        # print(f"node_features[1]: {node_features[1]}")
 
         # print(f"np.array(node_features).shape: {np.array(node_features).shape}")
         # print(f"np.array(adjacency_matrices).shape: {np.array(adjacency_matrices).shape}")
@@ -216,7 +216,6 @@ class MoleculeDataLoader(DataLoader):
             self.collate_fn = self.collate_fn
 
     
-
     def _collate_extra_features(self, batch):
 
         # print(f"type(batch): {type(batch)}")
@@ -227,7 +226,7 @@ class MoleculeDataLoader(DataLoader):
         # print(f"batch[0][0]: {batch[0][0]}")
         # print(f"type(batch[0][1]): {type(batch[0][1])}")
 
-        print("_collate_extra_features")
+        # print("_collate_extra_features")
 
         if self.dataset.prepare_data_for_mat:
 
