@@ -125,8 +125,10 @@ class MoleculeDataset(Dataset):
                     pickle.dump(distance_matrices, fp)
 
         # convert outputs to tensors
-        # print(f"node_features[0].shape: {node_features[0].shape}")
-        # print(f"node_features[1].shape: {node_features[1].shape}")
+        print(f"node_features[0].shape: {node_features[0].shape}")
+        print(f"node_features[0]: {node_features[0]}")
+        print(f"node_features[1].shape: {node_features[1].shape}")
+        print(f"node_features[1]: {node_features[1]}")
 
         # print(f"np.array(node_features).shape: {np.array(node_features).shape}")
         # print(f"np.array(adjacency_matrices).shape: {np.array(adjacency_matrices).shape}")
@@ -235,7 +237,8 @@ class MoleculeDataLoader(DataLoader):
             max_size = 0
 
             for molecule in batch:
-
+                
+                print(f"smiles: {smiles}")
                 smiles, vectorized_molecule, label, w, node_features, adjacency_matrix, distance_matrix = molecule
                     
                 smiles_list.append(smiles)
