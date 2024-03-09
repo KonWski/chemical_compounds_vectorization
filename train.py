@@ -61,7 +61,6 @@ def train_model(
             running_loss = 0.0
 
             criterion = trainset.criterion
-            print(f"type(criterion): {type(criterion)}")
 
             if state == "train":
                 model.train()
@@ -69,13 +68,24 @@ def train_model(
                 model.eval()
 
             for id, batch in enumerate(loader, 0):
-                
-                print(f"id: {id}")
 
                 with torch.set_grad_enabled(state == 'train'):
                     
                     smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
+
+                    print(8*"-")
+                    print("----INPUTS-----")
+                    print(8*"-")
+                    print("node_features".upper())
+                    print(node_features)
+                    print("batch_mask".upper())
+                    print(batch_mask)
+                    print("adjacency_matrices".upper())
+                    print(adjacency_matrices)
+                    print("distance_matrices".upper())
+                    print(distance_matrices)
+
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
                     print(f"output: {outputs}")
                     print(f"labels: {labels}")
