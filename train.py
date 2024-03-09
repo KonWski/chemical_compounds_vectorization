@@ -123,7 +123,7 @@ def train_model(
 
             # save and log epoch statistics
             checkpoint["epoch_loss"] = round(running_loss / len_dataset, 2)
-            logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint["epoch_loss"]}")
+            logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['epoch_loss']}")
 
         if checkpoint["epoch_loss"] < best_test_loss:
             
