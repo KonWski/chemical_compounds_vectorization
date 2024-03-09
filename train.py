@@ -70,7 +70,7 @@ def train_model(
 
         model = make_model(**model_params)
         optimizer = Adam(model.parameters(), lr=1e-5)
-        best_test_loss = 0
+        best_test_loss = float("inf")
         start_epoch = 0
 
     for epoch in range(start_epoch, n_epochs):
