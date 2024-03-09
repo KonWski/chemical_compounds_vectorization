@@ -61,6 +61,7 @@ def train_model(
             running_loss = 0.0
 
             criterion = trainset.criterion
+            print(f"type(criterion): {type(criterion)}")
 
             if state == "train":
                 model.train()
