@@ -262,10 +262,10 @@ class MoleculeDataLoader(DataLoader):
             node_features_list = torch.Tensor(np.array(node_features_list)) 
             adjacency_matrices_list = torch.Tensor(np.array(adjacency_matrices_list)) 
             distance_matrices_list = torch.Tensor(np.array(distance_matrices_list)) 
-
-            return [smiles_list, vectorized_molecules_list, labels_list, w_list, \
-                node_features_list, adjacency_matrices_list, distance_matrices_list]
             
+            return [torch.Tensor(l) for l in [smiles_list, vectorized_molecules_list, labels_list, w_list, \
+                node_features_list, adjacency_matrices_list, distance_matrices_list]]
+             
         else:
             return batch
 
