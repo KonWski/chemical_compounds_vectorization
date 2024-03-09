@@ -195,7 +195,7 @@ class MoleculeDataset(Dataset):
     def _get_criterion(self):
 
         if self.dc_dataset_name == "Delaney":
-            return MSELoss
+            return MSELoss()
 
 class MoleculeDataLoader(DataLoader):
 
