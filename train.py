@@ -5,7 +5,7 @@ import logging
 import yaml
 from pathlib import Path
 from mat_model import make_model, load_checkpoint, save_checkpoint
-import datetime
+from datetime import datetime
 
 def train_model(
         device, 
