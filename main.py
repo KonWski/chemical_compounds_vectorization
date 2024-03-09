@@ -14,14 +14,17 @@ def get_args():
                         choices=["HIV", "TOX21", "Delaney"])
     parser.add_argument('--download_dataset', type=str, help='Download dataset from MoleculeNet')
 
-    parser.add_argument('--model_type', type=str, help="type of model which will be trained", 
+    parser.add_argument('--model_type', type=str, help="Type of model which will be trained", 
                         choices=["mat", "mol2vec"])    
+    parser.add_argument('--checkpoint_path', type=str, help="Path to the loaded checkpoint")
+    parser.add_argument('--load_model', type=str, help="Continue learning using existing model and optimizer")   
+
 
     args = vars(parser.parse_args())
     
     # parse str to boolean
     str_true = ["Y", "y", "Yes", "yes", "true", "True"]
-    bool_params = ["download_dataset"]
+    bool_params = ["download_dataset", "load_model"]
     for param in bool_params:
         if args[param] in str_true:
             args[param] = True
@@ -48,4 +51,5 @@ if __name__ == "__main__":
     logging.info(f"Device: {device}")
 
     model = train_model(device, args["n_epochs"], args["dataset_name"], args["download_dataset"], 
-                        args["root_datasets_dir"], args["batch_size"], args["model_type"])
+                        args["root_datasets_dir"], args["checkpoint_path"], args["batch_size"], 
+                        args["model_type"], args["load_model"])

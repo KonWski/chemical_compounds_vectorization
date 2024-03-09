@@ -1,14 +1,11 @@
 import math, copy
-
 import numpy as np
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.autograd import Variable
-
 from mat_utils import xavier_normal_small_init_, xavier_uniform_small_init_
-
+import logging
+import yaml
 
 ### Model definition
 def make_model(d_atom, N=2, d_model=128, h=8, dropout=0.1, 
@@ -344,7 +341,6 @@ class PositionwiseFeedForward(nn.Module):
 
     
 ## Embeddings
-
 class Embeddings(nn.Module):
     def __init__(self, d_model, d_atom, dropout):
         super(Embeddings, self).__init__()
@@ -353,3 +349,61 @@ class Embeddings(nn.Module):
 
     def forward(self, x):
         return self.dropout(self.lut(x))
+
+
+def save_checkpoint(checkpoint: dict, checkpoint_path: str):
+    '''
+    saves checkpoint on given checkpoint_path
+    '''
+    torch.save(checkpoint, checkpoint_path)
+
+    logging.info(8*"-")
+    logging.info(f"Saved model to checkpoint: {checkpoint_path}")
+    logging.info(f"Epoch: {checkpoint['epoch']}")
+    logging.info(8*"-")
+
+
+def load_checkpoint(checkpoint_path: str):
+    '''
+    loads model checkpoint from given path
+
+    Parameters
+    ----------
+    checkpoint_path : str
+        Path to checkpoint
+
+    Notes
+    -----
+    checkpoint: dict
+                parameters retrieved from training process i.e.:
+                - model_state_dict
+                - dc_dataset_name
+                - yaml_config_path
+                - last finished number of epoch
+                - save time
+                - loss from last epoch testing
+                
+    '''
+    checkpoint = torch.load(checkpoint_path)
+
+    # load configuration file for mat model
+    with open(checkpoint["yaml_config_dir"], 'r') as yaml_config:
+        model_params = yaml.safe_load(yaml_config)
+
+    # initiate model
+    model = make_model(**model_params)
+
+    # load parameters from checkpoint
+    model.load_state_dict(checkpoint["model_state_dict"])
+
+    # print loaded parameters
+    logging.info(f"Loaded model from checkpoint: {checkpoint_path}")
+    logging.info(f"DeepChem dataset name: {checkpoint['dc_dataset_name']}")
+    logging.info(f"Path to conifguration file: {checkpoint['yaml_config_path']}")
+    logging.info(f"Epoch: {checkpoint['epoch']}")
+    logging.info(f"Save dttm: {checkpoint['save_dttm']}")
+    logging.info(f"Test loss: {checkpoint['test_loss']}")
+
+    logging.info(8*"-")
+
+    return model, checkpoint
