@@ -238,9 +238,8 @@ class MoleculeDataLoader(DataLoader):
 
             for molecule in batch:
                 
-                print(f"smiles: {smiles}")
                 smiles, vectorized_molecule, label, w, node_features, adjacency_matrix, distance_matrix = molecule
-                    
+
                 smiles_list.append(smiles)
                 vectorized_molecules_list.append(vectorized_molecule)
                 labels_list.append(label)
@@ -253,6 +252,8 @@ class MoleculeDataLoader(DataLoader):
                     max_size = adjacency_matrix.shape[0]
 
             for molecule in batch:
+
+                smiles, vectorized_molecule, label, w, node_features, adjacency_matrix, distance_matrix = molecule
 
                 # print(f"max_size: {max_size}")
                 adjacency_matrices_list.append(self._pad_array(adjacency_matrix, (max_size, max_size)))
