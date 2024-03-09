@@ -52,10 +52,8 @@ def train_model(
     len_train_dataset = len(trainset)
     len_test_dataset = len(testset)
 
-    optimizer = Adam(model.parameters(), lr=1e-5)
-
     if load_model:
-        model, optimizer, loaded_checkpoint = load_checkpoint(model, optimizer, checkpoint_path)
+        model, optimizer, loaded_checkpoint = load_checkpoint(checkpoint_path)
         best_test_loss = loaded_checkpoint["test_loss"]
         start_epoch = loaded_checkpoint["epoch"] + 1
         yaml_config_path = loaded_checkpoint["yaml_config_path"]
@@ -71,6 +69,7 @@ def train_model(
             model_params["d_atom"] = trainset.node_features[0].shape[1]
 
         model = make_model(**model_params)
+        optimizer = Adam(model.parameters(), lr=1e-5)
         best_test_loss = 0
         start_epoch = 0
 
