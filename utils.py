@@ -25,4 +25,4 @@ def load_yaml_config(model_type: str, config_name: str = "default", dataset: Mol
         if model_type == "mat":
             model_params["d_atom"] = dataset.node_features[0].shape[1]
 
-    return model_params
+    return model_params, yaml_config_path
