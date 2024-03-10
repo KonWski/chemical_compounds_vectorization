@@ -42,7 +42,7 @@ def train_svm(
     X_test, y_test = np.array(testset.vectorized_molecules), np.array(testset.labels)
 
     # load params for model from yaml
-    model_params = load_yaml_config("svm", config_name)
+    model_params, _ = load_yaml_config("svm", config_name)
 
     # train model
     pipeline = Pipeline([('scaler', StandardScaler()), ('svr', svm.SVR(**model_params))])

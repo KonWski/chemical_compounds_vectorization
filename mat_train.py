@@ -61,7 +61,7 @@ def train_mat(
 
     else:
 
-        model_params = load_yaml_config(model_type, "default", trainset)
+        model_params, yaml_config_path = load_yaml_config(model_type, "default", trainset)
         model = make_model(**model_params)
         optimizer = Adam(model.parameters(), lr=1e-5)
         best_test_loss = float("inf")
