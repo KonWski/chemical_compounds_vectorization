@@ -3,11 +3,11 @@ import torch
 from torch.optim import Adam
 import logging
 import yaml
-from pathlib import Path
 from mat_model import make_model, load_checkpoint, save_checkpoint
 from datetime import datetime
+from utils import load_yaml_config
 
-def train_model(
+def train_mat(
         device, 
         n_epochs: int,
         dataset_name: str,
@@ -61,13 +61,7 @@ def train_model(
 
     else:
 
-        yaml_config_path = f'{Path(__file__).parent}/models_params/{model_type}.yaml'
-
-        # model params loading
-        with open(yaml_config_path, 'r') as yaml_config:
-            model_params = yaml.safe_load(yaml_config)
-            model_params["d_atom"] = trainset.node_features[0].shape[1]
-
+        model_params = load_yaml_config(model_type, "default", trainset)
         model = make_model(**model_params)
         optimizer = Adam(model.parameters(), lr=1e-5)
         best_test_loss = float("inf")

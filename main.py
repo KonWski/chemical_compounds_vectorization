@@ -1,7 +1,8 @@
 import argparse
 import logging
 import torch
-from train import train_model
+from mat_train import train_mat
+from svm_train import train_svm
 from utils import prepare_checkpoint_directory
 
 def get_args():
@@ -14,9 +15,12 @@ def get_args():
                         choices=["HIV", "TOX21", "Delaney"])
     parser.add_argument('--download_dataset', type=str, help='Download dataset from MoleculeNet')
     parser.add_argument('--model_type', type=str, help="Type of model which will be trained", 
-                        choices=["mat", "mol2vec"])    
+                        choices=["mat", "svm"])    
     parser.add_argument('--checkpoint_path', type=str, help="Path to the loaded checkpoint")
     parser.add_argument('--load_model', type=str, help="Continue learning using existing model and optimizer")   
+    parser.add_argument('--config_name', type=str, help="Configuration name selected from yaml describing model")
+    parser.add_argument('--featurizer_type', type=str, help="Featurizer used for initial compounds vectorization",
+                        choices=["ecfp", "graphconv","weave"])
 
     args = vars(parser.parse_args())
     
@@ -54,6 +58,13 @@ if __name__ == "__main__":
     # prepare directory for saving checkpoints
     prepare_checkpoint_directory(args["checkpoint_path"])
 
-    model = train_model(device, args["n_epochs"], args["dataset_name"], args["download_dataset"], 
-                        args["root_datasets_dir"], args["checkpoint_path"], args["batch_size"], 
-                        args["model_type"], args["load_model"])
+    if args["model_type"] == "mat":
+
+        model = train_mat(device, args["n_epochs"], args["dataset_name"], args["download_dataset"], 
+                            args["root_datasets_dir"], args["checkpoint_path"], args["batch_size"], 
+                            args["model_type"], args["load_model"])
+
+    elif args["model_type"] == "mat":
+
+        model = train_svm(args["featurizer_type"], args["dataset_name"], args["download_dataset"], 
+                            args["root_datasets_dir"], args["checkpoint_path"], args["config_name"])

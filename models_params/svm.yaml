@@ -1,0 +1,8 @@
+default:
+  kernel: "rbf"
+linear:
+  kernel: "linear"
+linear:
+  kernel: "sigmoid"
+linear:
+  kernel: "precomputed"
