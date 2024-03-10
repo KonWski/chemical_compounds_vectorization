@@ -351,11 +351,13 @@ class Embeddings(nn.Module):
         return self.dropout(self.lut(x))
 
 
-def save_checkpoint(checkpoint: dict, checkpoint_path: str):
+def save_checkpoint(checkpoint: dict, checkpoint_path: str, model_name: str):
     '''
     saves checkpoint on given checkpoint_path
     '''
-    torch.save(checkpoint, checkpoint_path)
+    full_checkpoint_path = f"{checkpoint_path}/{model_name}"
+
+    torch.save(checkpoint, full_checkpoint_path)
 
     logging.info(8*"-")
     logging.info(f"Saved model to checkpoint: {checkpoint_path}")

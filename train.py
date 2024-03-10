@@ -137,7 +137,7 @@ def train_model(
             checkpoint['dc_dataset_name'] = dataset_name
             checkpoint['yaml_config_path'] = yaml_config_path
 
-            save_checkpoint(checkpoint, checkpoint_path)
+            save_checkpoint(checkpoint, checkpoint_path, f"{model_type}_{dataset_name}")
 
         else:
             logging.info(8*"-")
