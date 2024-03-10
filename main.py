@@ -64,7 +64,7 @@ if __name__ == "__main__":
                             args["root_datasets_dir"], args["checkpoint_path"], args["batch_size"], 
                             args["model_type"], args["load_model"])
 
-    elif args["model_type"] == "mat":
+    elif args["model_type"] == "svm":
 
         model = train_svm(args["featurizer_type"], args["dataset_name"], args["download_dataset"], 
                             args["root_datasets_dir"], args["checkpoint_path"], args["config_name"])
