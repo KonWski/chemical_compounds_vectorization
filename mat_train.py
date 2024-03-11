@@ -120,7 +120,7 @@ def train_mat(
             checkpoint["save_dttm"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             checkpoint['dc_dataset_name'] = dataset_name
             checkpoint['yaml_config_path'] = yaml_config_path
-            checkpoint['task_name'] = trainset.task_name
+            checkpoint['dataset_task_name'] = trainset.dataset_task_name
 
             save_checkpoint(checkpoint, checkpoint_path, f"{model_type}_{dataset_name}")
 
