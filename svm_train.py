@@ -47,12 +47,12 @@ def train_svm(
     X_train, y_train = np.array(trainset.vectorized_molecules), np.ravel(np.array(trainset.labels))
     X_test, y_test = np.array(testset.vectorized_molecules), np.ravel(np.array(testset.labels))
 
+    # load params for model from yaml
+    model_params, _ = load_yaml_config("svm", config_name)
+
     # criterion and model type
     criterion = trainset.criterion
     model = svm.SVR(**model_params) if trainset.prediction_task == "regression" else svm.SVC(**model_params)
-
-    # load params for model from yaml
-    model_params, _ = load_yaml_config("svm", config_name)
 
     # train model
     pipeline = Pipeline([('scaler', StandardScaler()), ('svm', model)])
