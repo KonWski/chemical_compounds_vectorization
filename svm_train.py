@@ -41,6 +41,10 @@ def train_svm(
     X_train, y_train = np.array(trainset.vectorized_molecules), np.array(trainset.labels)
     X_test, y_test = np.array(testset.vectorized_molecules), np.array(testset.labels)
 
+    # debug
+    print(f"X_train.shape: {X_train.shape}")
+    print(f"y_train.shape: {y_train.shape}")
+
     # load params for model from yaml
     model_params, _ = load_yaml_config("svm", config_name)
 
