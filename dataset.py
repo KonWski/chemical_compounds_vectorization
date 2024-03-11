@@ -18,7 +18,7 @@ _collate_fn_t = Callable[[List[T]], Any]
 class MoleculeDataset(Dataset):
 
     def __init__(self, dc_dataset_name: str, split: str, featurizer: str, prepare_data_for_mat: bool,
-                 download_dataset: bool = False, root_datasets_dir: str = "", task_name: str = None, 
+                 download_dataset: bool = False, root_datasets_dir: str = "", dataset_task_name: str = None, 
                  model_type: str = None) -> None:
        
         self.dc_dataset_name = dc_dataset_name
@@ -28,7 +28,7 @@ class MoleculeDataset(Dataset):
         self.root_datasets_dir = root_datasets_dir
         self.dataset_path, self.dataset_split_path = self._prepare_directories(download_dataset)
         self.smiles, self.vectorized_molecules, self.labels, \
-            self.w, self.dataset_task_name, self.prediction_task = self._prepare_dc_datasets(download_dataset, task_name)
+            self.w, self.dataset_task_name, self.prediction_task = self._prepare_dc_datasets(download_dataset, dataset_task_name)
         self.node_features, self.adjacency_matrix, \
             self.distance_matrices = self._prepare_dataset_for_mat(download_dataset)
         
