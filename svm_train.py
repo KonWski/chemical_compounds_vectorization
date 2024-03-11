@@ -38,12 +38,8 @@ def train_svm(
     testset = MoleculeDataset(dataset_name, "test", featurizer_type, True, download_dataset, root_datasets_dir)
 
     # train and test data
-    X_train, y_train = np.array(trainset.vectorized_molecules), np.array(trainset.labels)
-    X_test, y_test = np.array(testset.vectorized_molecules), np.array(testset.labels)
-
-    # debug
-    print(f"X_train.shape: {X_train.shape}")
-    print(f"y_train.shape: {y_train.shape}")
+    X_train, y_train = np.array(trainset.vectorized_molecules), np.ravel(np.array(trainset.labels))
+    X_test, y_test = np.array(testset.vectorized_molecules), np.ravel(np.array(testset.labels))
 
     # load params for model from yaml
     model_params, _ = load_yaml_config("svm", config_name)
