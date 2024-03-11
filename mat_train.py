@@ -16,7 +16,8 @@ def train_mat(
         checkpoint_path: str,
         batch_size: int,
         model_type: str,
-        load_model: bool
+        load_model: bool,
+        config_name: str
     ):
     '''
 
@@ -39,6 +40,8 @@ def train_mat(
         type of model which will be trained
     load_model: bool
         continue learning using existing model and optimizer
+    config_name: str
+        configuration name selected from yaml describing model
     '''
 
     # datasets and dataloaders
@@ -61,7 +64,7 @@ def train_mat(
 
     else:
 
-        model_params, yaml_config_path = load_yaml_config(model_type, "default", trainset)
+        model_params, yaml_config_path = load_yaml_config(model_type, config_name, trainset)
         model = make_model(**model_params)
         optimizer = Adam(model.parameters(), lr=1e-5)
         best_test_loss = float("inf")

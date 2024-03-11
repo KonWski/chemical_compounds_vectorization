@@ -18,7 +18,7 @@ def get_args():
                         choices=["mat", "svm"])    
     parser.add_argument('--checkpoint_path', type=str, help="Path to the loaded checkpoint")
     parser.add_argument('--load_model', type=str, help="Continue learning using existing model and optimizer")   
-    parser.add_argument('--config_name', type=str, help="Configuration name selected from yaml describing model")
+    parser.add_argument('--config_name', type=str, help="Configuration name selected from yaml describing model", default="default")
     parser.add_argument('--featurizer_type', type=str, help="Featurizer used for initial compounds vectorization",
                         choices=["ecfp", "graphconv","weave"])
 
