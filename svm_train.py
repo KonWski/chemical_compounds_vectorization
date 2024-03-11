@@ -50,8 +50,9 @@ def train_svm(
 
     for state, X, y in zip(["train", "test"], [X_train, X_test], [y_train, y_test]):
         y_predicted = pipeline.predict(X)
-        loss = mean_squared_error(y_true=y, y_pred=y_predicted)
+        loss = round(mean_squared_error(y_true=y, y_pred=y_predicted), 2)
         logging.info(f"state: {state}, loss: {loss}")
     
     # save model to checkpoint path
-    pickle.dump(pipeline, f"{checkpoint_path}/svm_{config_name}.pkl")
+    with open(f"{checkpoint_path}/svm_{config_name}.pkl", "wb") as f:
+        pickle.dump(pipeline, f)
