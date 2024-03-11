@@ -48,10 +48,10 @@ def train_mat(
     '''
 
     # datasets and dataloaders
-    trainset = MoleculeDataset(dataset_name, "train", "ECFP", True, download_dataset, root_datasets_dir, dataset_task_name)
+    trainset = MoleculeDataset(dataset_name, "train", "ECFP", True, download_dataset, root_datasets_dir, dataset_task_name, model_type)
     train_loader = MoleculeDataLoader(trainset, batch_size=batch_size, shuffle=True)
 
-    testset = MoleculeDataset(dataset_name, "test", "ECFP", True, download_dataset, root_datasets_dir, dataset_task_name)
+    testset = MoleculeDataset(dataset_name, "test", "ECFP", True, download_dataset, root_datasets_dir, dataset_task_name, model_type)
     test_loader = MoleculeDataLoader(testset, batch_size=batch_size, shuffle=True)
 
     # number of observations

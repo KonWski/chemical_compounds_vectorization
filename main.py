@@ -68,4 +68,5 @@ if __name__ == "__main__":
     elif args["model_type"] == "svm":
 
         model = train_svm(args["featurizer_type"], args["dataset_name"], args["download_dataset"], 
-                            args["root_datasets_dir"], args["checkpoint_path"], args["config_name"], args["dataset_task_name"])
+                            args["root_datasets_dir"], args["checkpoint_path"], args["config_name"], 
+                            args["dataset_task_name"], args["model_type"])

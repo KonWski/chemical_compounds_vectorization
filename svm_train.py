@@ -15,7 +15,8 @@ def train_svm(
         root_datasets_dir: str,
         checkpoint_path: str,
         config_name: str,
-        dataset_task_name: str
+        dataset_task_name: str,
+        model_type: str
     ):
     '''
 
@@ -34,11 +35,13 @@ def train_svm(
         configuration name selected from yaml describing model
     dataset_task_name: str
         task used for filtering down tox21 dataset
+    model_type: str
+        type of model which will be trained
     '''
 
     # datasets
-    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, True, download_dataset, root_datasets_dir, dataset_task_name)
-    testset = MoleculeDataset(dataset_name, "test", featurizer_type, True, download_dataset, root_datasets_dir, dataset_task_name)
+    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, True, download_dataset, root_datasets_dir, dataset_task_name, model_type)
+    testset = MoleculeDataset(dataset_name, "test", featurizer_type, True, download_dataset, root_datasets_dir, dataset_task_name, model_type)
 
     # train and test data
     X_train, y_train = np.array(trainset.vectorized_molecules), np.ravel(np.array(trainset.labels))
