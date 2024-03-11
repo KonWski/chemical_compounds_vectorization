@@ -182,7 +182,7 @@ class MoleculeDataset(Dataset):
                 np.save(X_path, X)
                 np.save(y_path, y)
                 np.save(w_path, w)
-
+        print(self.dc_dataset_name)
         return smiles, X, y, w, dataset_task_name, prediction_task
 
 
