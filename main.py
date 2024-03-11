@@ -21,7 +21,7 @@ def get_args():
     parser.add_argument('--load_model', type=str, help="Continue learning using existing model and optimizer")   
     parser.add_argument('--config_name', type=str, help="Configuration name selected from yaml describing model", default="default")
     parser.add_argument('--featurizer_type', type=str, help="Featurizer used for initial compounds vectorization",
-                        choices=["ecfp", "graphconv","weave"])
+                        choices=["ECFP", "graphconv","weave"])
     
     args = vars(parser.parse_args())
     
@@ -63,7 +63,8 @@ if __name__ == "__main__":
 
         model = train_mat(device, args["n_epochs"], args["dataset_name"], args["download_dataset"], 
                             args["root_datasets_dir"], args["checkpoint_path"], args["batch_size"], 
-                            args["model_type"], args["load_model"], args["config_name"], args["dataset_task_name"])
+                            args["model_type"], args["load_model"], args["featurizer_type"], args["config_name"], 
+                            args["dataset_task_name"])
 
     elif args["model_type"] == "svm":
 
