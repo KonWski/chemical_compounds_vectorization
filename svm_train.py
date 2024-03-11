@@ -54,5 +54,8 @@ def train_svm(
         logging.info(f"state: {state}, loss: {loss}")
     
     # save model to checkpoint path
-    with open(f"{checkpoint_path}/svm_{config_name}.pkl", "wb") as f:
+    saved_model_name = f"svm_{config_name}.pkl"
+    pickle_path = f"{checkpoint_path}/{saved_model_name}"
+    with open(pickle_path, "wb") as f:
         pickle.dump(pipeline, f)
+        logging.info(f"Model {saved_model_name} saved to {checkpoint_path}")
