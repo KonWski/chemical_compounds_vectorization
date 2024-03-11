@@ -2,7 +2,7 @@ default:
   kernel: "rbf"
 linear:
   kernel: "linear"
-linear:
+sigmoid:
   kernel: "sigmoid"
-linear:
+precomputed:
   kernel: "precomputed"
