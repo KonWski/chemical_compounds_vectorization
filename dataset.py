@@ -161,7 +161,7 @@ class MoleculeDataset(Dataset):
                 prediction_task = "classification"
             elif self.dc_dataset_name == "Delaney":
                 dataset_tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=self.featurizer)
-                prediction_task = "classification"
+                prediction_task = "regression"
             else:
                 raise Exception(f"Dataset {self.dataset_name} not implemented.")
 
