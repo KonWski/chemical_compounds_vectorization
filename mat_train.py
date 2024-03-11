@@ -17,7 +17,8 @@ def train_mat(
         batch_size: int,
         model_type: str,
         load_model: bool,
-        config_name: str
+        config_name: str,
+        dataset_task_name: str
     ):
     '''
 
@@ -42,13 +43,15 @@ def train_mat(
         continue learning using existing model and optimizer
     config_name: str
         configuration name selected from yaml describing model
+    dataset_task_name: str
+        task used for filtering down tox21 dataset
     '''
 
     # datasets and dataloaders
-    trainset = MoleculeDataset(dataset_name, "train", "ECFP", True, download_dataset, root_datasets_dir)
+    trainset = MoleculeDataset(dataset_name, "train", "ECFP", True, download_dataset, root_datasets_dir, dataset_task_name)
     train_loader = MoleculeDataLoader(trainset, batch_size=batch_size, shuffle=True)
 
-    testset = MoleculeDataset(dataset_name, "test", "ECFP", True, download_dataset, root_datasets_dir)
+    testset = MoleculeDataset(dataset_name, "test", "ECFP", True, download_dataset, root_datasets_dir, dataset_task_name)
     test_loader = MoleculeDataLoader(testset, batch_size=batch_size, shuffle=True)
 
     # number of observations
@@ -63,7 +66,6 @@ def train_mat(
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 
     else:
-
         model_params, yaml_config_path = load_yaml_config(model_type, config_name, trainset)
         model = make_model(**model_params)
         optimizer = Adam(model.parameters(), lr=1e-5)
@@ -92,22 +94,7 @@ def train_mat(
                     smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
 
-                    # print(8*"-")
-                    # print("----INPUTS-----")
-                    # print(8*"-")
-                    # print("node_features".upper())
-                    # print(node_features)
-                    # print("batch_mask".upper())
-                    # print(batch_mask)
-                    # print("adjacency_matrices".upper())
-                    # print(adjacency_matrices)
-                    # print("distance_matrices".upper())
-                    # print(distance_matrices)
-
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
-                    # print(f"output: {outputs}")
-                    # print(f"labels: {labels}")
-                    
                     loss = criterion(outputs, labels)
 
                     if state == "train":
@@ -133,6 +120,7 @@ def train_mat(
             checkpoint["save_dttm"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             checkpoint['dc_dataset_name'] = dataset_name
             checkpoint['yaml_config_path'] = yaml_config_path
+            checkpoint['task_name'] = trainset.task_name
 
             save_checkpoint(checkpoint, checkpoint_path, f"{model_type}_{dataset_name}")
 

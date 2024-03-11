@@ -14,7 +14,8 @@ def train_svm(
         download_dataset: bool,
         root_datasets_dir: str,
         checkpoint_path: str,
-        config_name: str
+        config_name: str,
+        dataset_task_name: str
     ):
     '''
 
@@ -31,31 +32,38 @@ def train_svm(
         Path to the loaded checkpoint
     config_name: str
         configuration name selected from yaml describing model
+    dataset_task_name: str
+        task used for filtering down tox21 dataset
     '''
 
     # datasets
-    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, True, download_dataset, root_datasets_dir)
-    testset = MoleculeDataset(dataset_name, "test", featurizer_type, True, download_dataset, root_datasets_dir)
+    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, True, download_dataset, root_datasets_dir, dataset_task_name)
+    testset = MoleculeDataset(dataset_name, "test", featurizer_type, True, download_dataset, root_datasets_dir, dataset_task_name)
 
     # train and test data
     X_train, y_train = np.array(trainset.vectorized_molecules), np.ravel(np.array(trainset.labels))
     X_test, y_test = np.array(testset.vectorized_molecules), np.ravel(np.array(testset.labels))
 
+    # criterion and model type
+    criterion = trainset.criterion
+    model = svm.SVR(**model_params) if trainset.prediction_task == "regression" else svm.SVC(**model_params)
+
     # load params for model from yaml
     model_params, _ = load_yaml_config("svm", config_name)
 
     # train model
-    pipeline = Pipeline([('scaler', StandardScaler()), ('svr', svm.SVR(**model_params))])
+    pipeline = Pipeline([('scaler', StandardScaler()), ('svm', model)])
     pipeline.fit(X_train, y_train)
 
     for state, X, y in zip(["train", "test"], [X_train, X_test], [y_train, y_test]):
         y_predicted = pipeline.predict(X)
-        loss = round(mean_squared_error(y_true=y, y_pred=y_predicted), 2)
+        loss = round(criterion(y_true=y, y_pred=y_predicted), 2)
         logging.info(f"state: {state}, loss: {loss}")
     
     # save model to checkpoint path
     saved_model_name = f"svm_{config_name}.pkl"
     pickle_path = f"{checkpoint_path}/{saved_model_name}"
+
     with open(pickle_path, "wb") as f:
         pickle.dump(pipeline, f)
         logging.info(f"Model {saved_model_name} saved to {checkpoint_path}")

@@ -7,7 +7,8 @@ import pickle
 from torch.utils.data import DataLoader
 from typing import Any, Callable, Iterable, TypeVar, List, Optional, Union
 import torch
-from torch.nn import BCELoss, CrossEntropyLoss, MSELoss
+from torch.nn import BCELoss, MSELoss
+from sklearn.metrics import mean_squared_error, log_loss
 
 T_co = TypeVar('T_co', covariant=True)
 T = TypeVar('T')
@@ -17,7 +18,8 @@ _collate_fn_t = Callable[[List[T]], Any]
 class MoleculeDataset(Dataset):
 
     def __init__(self, dc_dataset_name: str, split: str, featurizer: str, prepare_data_for_mat: bool,
-                 download_dataset: bool = False, root_datasets_dir: str="") -> None:
+                 download_dataset: bool = False, root_datasets_dir: str = "", task_name: str = None, 
+                 model_type: str = None) -> None:
        
         self.dc_dataset_name = dc_dataset_name
         self.split = split
@@ -25,10 +27,13 @@ class MoleculeDataset(Dataset):
         self.prepare_data_for_mat = prepare_data_for_mat
         self.root_datasets_dir = root_datasets_dir
         self.dataset_path, self.dataset_split_path = self._prepare_directories(download_dataset)
-        self.smiles, self.vectorized_molecules, self.labels, self.w = self._prepare_dc_datasets(download_dataset)
+        self.smiles, self.vectorized_molecules, self.labels, \
+            self.w, self.dataset_task_name, self.prediction_task = self._prepare_dc_datasets(download_dataset, task_name)
         self.node_features, self.adjacency_matrix, \
             self.distance_matrices = self._prepare_dataset_for_mat(download_dataset)
-        self.criterion = self._get_criterion()
+        
+        # TODO criterion for scikit
+        self.criterion = self._get_criterion(model_type)
 
 
     def __getitem__(self, index):
@@ -101,11 +106,6 @@ class MoleculeDataset(Dataset):
             node_features = []
             adjacency_matrices = []
             distance_matrices = []
-            # print(f"type(extra_features): {type(molecules_extra_features)}")
-            # print(f"len(extra_features): {len(molecules_extra_features)}")
-            # print(f"node features: {type(molecules_extra_features[0][0])}")
-            # print(f"adjacency matrices: {type(molecules_extra_features[0][1])}")
-            # print(f"distance matrices: {type(molecules_extra_features[0][2])}")
 
             # collect all extra features into lists
             for extra_features in molecules_extra_features:
@@ -124,36 +124,17 @@ class MoleculeDataset(Dataset):
                 with open(distance_matrices_path, "wb") as fp:
                     pickle.dump(distance_matrices, fp)
 
-        # convert outputs to tensors
-        # print(f"node_features[0].shape: {node_features[0].shape}")
-        # print(f"node_features[0]: {node_features[0]}")
-        # print(f"node_features[1].shape: {node_features[1].shape}")
-        # print(f"node_features[1]: {node_features[1]}")
-
-        # print(f"np.array(node_features).shape: {np.array(node_features).shape}")
-        # print(f"np.array(adjacency_matrices).shape: {np.array(adjacency_matrices).shape}")
-        # print(f"np.array(distance_matrices).shape: {np.array(distance_matrices).shape}")
-
-
         return node_features, adjacency_matrices, distance_matrices
 
 
-    def _prepare_dc_datasets(self, download_dataset: bool):
+    def _prepare_dc_datasets(self, download_dataset: bool, dataset_task_name: str):
         '''
         Downloads dataset from Deepchem MoleculeNet
         
         Parameters
         ----------
-        dataset_name: str
-            name of the dataset to download from repository
-        featurizer: str="ECFP"
-            type of molecule featurizer 
-        prepare_data_for_mat: bool=False
-            converts smiles representation into (node features, adjacency matrices, distance matrices)
         download_dataset: bool=False
             Download dataset from MoleculeNet
-        root_datasets_dir: str=""
-            Path where dataset should be downloaded or where is it already stored
         '''
 
         smiles_path = f"{self.dataset_split_path}/smiles_{self.split}.npy"
@@ -170,20 +151,31 @@ class MoleculeDataset(Dataset):
             w = np.load(w_path, allow_pickle=True)
 
         else:
-            
+
             # download datasets from deepchem
             if self.dc_dataset_name == "HIV":
-                tasks, datasets, transformers = dc.molnet.load_hiv(featurizer=self.featurizer)
+                dataset_tasks, datasets, transformers = dc.molnet.load_hiv(featurizer=self.featurizer)
+                prediction_task = "classification"
             elif self.dc_dataset_name == "TOX21":
-                tasks, datasets, transformers = dc.molnet.load_tox21(featurizer=self.featurizer)
+                dataset_tasks, datasets, transformers = dc.molnet.load_tox21(featurizer=self.featurizer)
+                prediction_task = "classification"
             elif self.dc_dataset_name == "Delaney":
-                tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=self.featurizer)
+                dataset_tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=self.featurizer)
+                prediction_task = "classification"
             else:
                 raise Exception(f"Dataset {self.dataset_name} not implemented.")
 
             split_id = 0 if self.split == "train" else 2
             smiles, X, y, w = datasets[split_id].ids, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
-            print(f"Smiles type: {type(smiles)}")
+            
+            # fiter out task
+            if dataset_task_name:
+                task_id = dataset_tasks.index(dataset_task_name)
+                y = y[:,task_id]
+            elif len(dataset_task_name) == 1:
+                dataset_task_name = dataset_tasks[dataset_task_name]
+            else:
+                raise Exception("Please specify dataset task name - dataset consists of more than 1 task.")
 
             if download_dataset:
                 np.save(smiles_path, smiles)
@@ -191,13 +183,33 @@ class MoleculeDataset(Dataset):
                 np.save(y_path, y)
                 np.save(w_path, w)
 
-        return smiles, X, y, w
+        return smiles, X, y, w, dataset_task_name, prediction_task
 
 
-    def _get_criterion(self):
+    def _get_criterion(self, model_type: str):
 
-        if self.dc_dataset_name == "Delaney":
-            return MSELoss()
+        # download datasets from deepchem
+        if self.dc_dataset_name == "HIV":
+            if model_type == "mat":
+                return BCELoss()
+            elif model_type == "svm":
+                return log_loss
+
+        elif self.dc_dataset_name == "TOX21":
+            if model_type == "mat":
+                return BCELoss()
+            elif model_type == "svm":
+                return log_loss
+
+        elif self.dc_dataset_name == "Delaney":
+            if model_type == "mat":
+                return MSELoss()
+            elif model_type == "svm":
+                return mean_squared_error
+
+        else:
+            raise Exception(f"Dataset {self.dataset_name} not implemented.")
+
 
 class MoleculeDataLoader(DataLoader):
 
@@ -208,8 +220,7 @@ class MoleculeDataLoader(DataLoader):
                  collate_fn: Optional[_collate_fn_t] = None):
 
         super().__init__(dataset, batch_size, shuffle)
-        print(f"dataset.prepare_data_for_mat: {dataset.prepare_data_for_mat}")
-        print(f"collate_fn: {collate_fn}")
+
         if dataset.prepare_data_for_mat and collate_fn is None:
             self.collate_fn = self._collate_extra_features
         else:
@@ -217,16 +228,6 @@ class MoleculeDataLoader(DataLoader):
 
     
     def _collate_extra_features(self, batch):
-
-        # print(f"type(batch): {type(batch)}")
-        # print(f"len(batch): {len(batch)}")
-        # print(f"type(batch[0]): {type(batch[0])}")
-        # print(f"len(batch[0]): {len(batch[0])}")
-        # print(f"type(batch[0][0]): {type(batch[0][0])}")
-        # print(f"batch[0][0]: {batch[0][0]}")
-        # print(f"type(batch[0][1]): {type(batch[0][1])}")
-
-        # print("_collate_extra_features")
 
         if self.dataset.prepare_data_for_mat:
 
@@ -243,9 +244,6 @@ class MoleculeDataLoader(DataLoader):
                 vectorized_molecules_list.append(vectorized_molecule)
                 labels_list.append(label)
                 w_list.append(w)
-
-                # node_features_list.append(node_features)
-                # adjacency_matrices_list.append(adjacency_matrix)
 
                 if adjacency_matrix.shape[0] > max_size:
                     max_size = adjacency_matrix.shape[0]
