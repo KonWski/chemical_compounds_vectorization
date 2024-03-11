@@ -31,9 +31,8 @@ class MoleculeDataset(Dataset):
             self.w, self.dataset_task_name, self.prediction_task = self._prepare_dc_datasets(download_dataset, dataset_task_name)
         self.node_features, self.adjacency_matrix, \
             self.distance_matrices = self._prepare_dataset_for_mat(download_dataset)
-        
-        # TODO criterion for scikit
         self.criterion = self._get_criterion(model_type)
+        self.prediction_task = self._get_prediction_task()
 
 
     def __getitem__(self, index):
@@ -155,13 +154,10 @@ class MoleculeDataset(Dataset):
             # download datasets from deepchem
             if self.dc_dataset_name == "HIV":
                 dataset_tasks, datasets, transformers = dc.molnet.load_hiv(featurizer=self.featurizer)
-                prediction_task = "classification"
             elif self.dc_dataset_name == "TOX21":
                 dataset_tasks, datasets, transformers = dc.molnet.load_tox21(featurizer=self.featurizer)
-                prediction_task = "classification"
             elif self.dc_dataset_name == "Delaney":
                 dataset_tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=self.featurizer)
-                prediction_task = "regression"
             else:
                 raise Exception(f"Dataset {self.dataset_name} not implemented.")
 
@@ -182,8 +178,8 @@ class MoleculeDataset(Dataset):
                 np.save(X_path, X)
                 np.save(y_path, y)
                 np.save(w_path, w)
-        print(self.dc_dataset_name)
-        return smiles, X, y, w, dataset_task_name, prediction_task
+
+        return smiles, X, y, w, dataset_task_name
 
 
     def _get_criterion(self, model_type: str):
@@ -209,6 +205,19 @@ class MoleculeDataset(Dataset):
 
         else:
             raise Exception(f"Dataset {self.dataset_name} not implemented.")
+
+
+    def _get_prediction_task(self):
+
+        # download datasets from deepchem
+        if self.dc_dataset_name == "HIV":
+            prediction_task = "classification"
+        elif self.dc_dataset_name == "TOX21":
+            prediction_task = "classification"
+        elif self.dc_dataset_name == "Delaney":
+            prediction_task = "regression"
+
+        return prediction_task
 
 
 class MoleculeDataLoader(DataLoader):
