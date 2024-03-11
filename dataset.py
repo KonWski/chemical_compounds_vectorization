@@ -28,7 +28,7 @@ class MoleculeDataset(Dataset):
         self.root_datasets_dir = root_datasets_dir
         self.dataset_path, self.dataset_split_path = self._prepare_directories(download_dataset)
         self.smiles, self.vectorized_molecules, self.labels, \
-            self.w, self.dataset_task_name, self.prediction_task = self._prepare_dc_datasets(download_dataset, dataset_task_name)
+            self.w, self.dataset_task_name = self._prepare_dc_datasets(download_dataset, dataset_task_name)
         self.node_features, self.adjacency_matrix, \
             self.distance_matrices = self._prepare_dataset_for_mat(download_dataset)
         self.criterion = self._get_criterion(model_type)
