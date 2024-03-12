@@ -35,7 +35,7 @@ class MoleculeDataset(Dataset):
 
 
     def __getitem__(self, index):
-
+        print(f"index: {index}")
         # extra features generated
         if self.prepare_data_for_mat:
             return self.smiles[index], self.vectorized_molecules[index], self.labels[index], self.w[index], \
