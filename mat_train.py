@@ -2,7 +2,6 @@ from dataset import MoleculeDataset, MoleculeDataLoader
 import torch
 from torch.optim import Adam
 import logging
-import yaml
 from mat_model import make_model, load_checkpoint, save_checkpoint
 from datetime import datetime
 from utils import load_yaml_config
@@ -94,7 +93,7 @@ def train_mat(
 
                 with torch.set_grad_enabled(state == 'train'):
                     
-                    smiles, vectorized_molecules, labels, w, node_features, adjacency_matrices, distance_matrices = batch
+                    _, _, labels, _, node_features, adjacency_matrices, distance_matrices = batch
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
 
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)

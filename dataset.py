@@ -12,7 +12,6 @@ from sklearn.metrics import mean_squared_error, log_loss
 
 T_co = TypeVar('T_co', covariant=True)
 T = TypeVar('T')
-_worker_init_fn_t = Callable[[int], None]
 _collate_fn_t = Callable[[List[T]], Any]
 
 class MoleculeDataset(Dataset):
@@ -100,7 +99,7 @@ class MoleculeDataset(Dataset):
 
         else:
 
-            molecules_extra_features, _ = load_data_from_smiles(self.smiles, self.labels)
+            molecules_extra_features, _ = load_data_from_smiles(self.smiles[:10], self.labels[:10])
             
             node_features = []
             adjacency_matrices = []
@@ -153,11 +152,11 @@ class MoleculeDataset(Dataset):
 
             # download datasets from deepchem
             if self.dc_dataset_name == "HIV":
-                dataset_tasks, datasets, transformers = dc.molnet.load_hiv(featurizer=self.featurizer)
+                dataset_tasks, datasets, _ = dc.molnet.load_hiv(featurizer=self.featurizer)
             elif self.dc_dataset_name == "TOX21":
-                dataset_tasks, datasets, transformers = dc.molnet.load_tox21(featurizer=self.featurizer)
+                dataset_tasks, datasets, _ = dc.molnet.load_tox21(featurizer=self.featurizer)
             elif self.dc_dataset_name == "Delaney":
-                dataset_tasks, datasets, transformers = dc.molnet.load_delaney(featurizer=self.featurizer)
+                dataset_tasks, datasets, _ = dc.molnet.load_delaney(featurizer=self.featurizer)
             else:
                 raise Exception(f"Dataset {self.dataset_name} not implemented.")
 
@@ -261,11 +260,8 @@ class MoleculeDataLoader(DataLoader):
 
                 smiles, vectorized_molecule, label, w, node_features, adjacency_matrix, distance_matrix = molecule
 
-                # print(f"max_size: {max_size}")
                 adjacency_matrices_list.append(self._pad_array(adjacency_matrix, (max_size, max_size)))
                 distance_matrices_list.append(self._pad_array(distance_matrix, (max_size, max_size)))
-                # print(f"[BEFORE] node_features.shape: {node_features.shape}")
-                # print(f"[AFTER] _pad_array shape: {self._pad_array(node_features, (max_size, node_features.shape[1])).shape}")
                 node_features_list.append(self._pad_array(node_features, (max_size, node_features.shape[1])))
 
             # convert list to tensors
