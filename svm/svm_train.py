@@ -2,7 +2,6 @@ from dataset import MoleculeDataset
 import logging
 from sklearn import svm
 import numpy as np
-from sklearn.metrics import mean_squared_error
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 import pickle

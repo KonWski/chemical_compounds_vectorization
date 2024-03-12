@@ -1,11 +1,11 @@
 import deepchem as dc
-from mat_data_utils import load_data_from_smiles
+from data_utils import load_data_from_smiles
 import numpy as np
-from torch.utils.data import Dataset, Sampler
+from torch.utils.data import Dataset
 import os
 import pickle
 from torch.utils.data import DataLoader
-from typing import Any, Callable, Iterable, TypeVar, List, Optional, Union
+from typing import Any, Callable, TypeVar, List, Optional
 import torch
 from torch.nn import BCELoss, MSELoss
 from sklearn.metrics import mean_squared_error, log_loss
@@ -35,7 +35,7 @@ class MoleculeDataset(Dataset):
 
 
     def __getitem__(self, index):
-        print(f"index: {index}")
+
         # extra features generated
         if self.prepare_data_for_mat:
             return self.smiles[index], self.vectorized_molecules[index], self.labels[index], self.w[index], \

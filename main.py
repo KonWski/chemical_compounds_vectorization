@@ -1,8 +1,8 @@
 import argparse
 import logging
 import torch
-from mat_train import train_mat
-from svm_train import train_svm
+from mat.mat_train import train_mat
+from svm.svm_train import train_svm
 from utils import prepare_checkpoint_directory
 
 def get_args():
