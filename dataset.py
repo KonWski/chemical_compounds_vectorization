@@ -99,7 +99,7 @@ class MoleculeDataset(Dataset):
 
         else:
 
-            molecules_extra_features, _ = load_data_from_smiles(self.smiles[:10], self.labels[:10])
+            molecules_extra_features, _ = load_data_from_smiles(self.smiles, self.labels)
             
             node_features = []
             adjacency_matrices = []
