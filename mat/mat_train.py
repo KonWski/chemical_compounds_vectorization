@@ -2,7 +2,7 @@ from dataset import MoleculeDataset, MoleculeDataLoader
 import torch
 from torch.optim import Adam
 import logging
-from mat_model import make_model, load_checkpoint, save_checkpoint
+from mat.mat_model import make_model, load_checkpoint, save_checkpoint
 from datetime import datetime
 from utils import load_yaml_config
 

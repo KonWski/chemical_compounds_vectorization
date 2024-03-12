@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mat_utils import xavier_normal_small_init_, xavier_uniform_small_init_
+from mat.mat_utils import xavier_normal_small_init_, xavier_uniform_small_init_
 import logging
 import yaml
 
