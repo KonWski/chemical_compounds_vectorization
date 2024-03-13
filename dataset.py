@@ -228,8 +228,6 @@ class MoleculeDataLoader(DataLoader):
                  collate_fn: Optional[_collate_fn_t] = None):
 
         super().__init__(dataset, batch_size, shuffle)
-        self._get_extra_features_max_sizes_()
-
 
         if dataset.prepare_data_for_mat and collate_fn is None:
             self.collate_fn = self._collate_extra_features
