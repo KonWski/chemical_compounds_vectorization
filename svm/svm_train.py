@@ -68,13 +68,11 @@ def train_svm(
         leveled_off_distance_matrices = np.array(squeeze(stack(leveled_off_distance_matrices), 1))
 
         if phase == "train":
-            X_train = np.concatenate((X_train, leveled_off_node_features), axis=1)    
-            X_train = np.concatenate((X_train, leveled_off_adjacency_matrices), axis=1)
-            X_train = np.concatenate((X_train, leveled_off_distance_matrices), axis=1)
+            print(f"[BEFORE] X_train.shape: {X_train.shape}")
+            X_train = np.concatenate((X_train, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
+            print(f"[AFTER] X_train.shape: {X_train.shape}")
         else:
-            X_test = np.concatenate((X_test, leveled_off_node_features), axis=1)    
-            X_test = np.concatenate((X_test, leveled_off_adjacency_matrices), axis=1)
-            X_test = np.concatenate((X_test, leveled_off_distance_matrices), axis=1)
+            X_test = np.concatenate((X_test, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
 
     # load params for model from yaml
     model_params, _ = load_yaml_config("svm", config_name)
