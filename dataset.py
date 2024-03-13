@@ -306,5 +306,5 @@ class MoleculeDataLoader(DataLoader):
     
 
     def _get_extra_features_max_sizes_(self):
-
+        pass
         # max sizes of node_features, adjacency_matrices, distance_matrices
