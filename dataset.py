@@ -31,14 +31,7 @@ class MoleculeDataset(Dataset):
         self.node_features, self.adjacency_matrix, \
             self.distance_matrices = self._prepare_dataset_for_mat(download_dataset)
         
-        print(f"type(self.node_features): {type(self.node_features)}")
-        print(f"self.node_features.shape: {self.node_features.shape}")
-
-        print(f"type(self.adjacency_matrix): {type(self.adjacency_matrix)}")
-        print(f"self.adjacency_matrix.shape: {self.adjacency_matrix.shape}")
-
-        print(f"type(self.distance_matrices): {type(self.distance_matrices)}")
-        print(f"self.distance_matrices.shape: {self.distance_matrices.shape}")
+        self._get_extra_features_max_sizes_()
 
         self.criterion = self._get_criterion(model_type)
         self.prediction_task = self._get_prediction_task()
