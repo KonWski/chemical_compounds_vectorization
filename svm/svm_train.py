@@ -41,8 +41,10 @@ def train_svm(
     '''
 
     # datasets
-    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, True, download_dataset, root_datasets_dir, dataset_task_name, model_type)
-    testset = MoleculeDataset(dataset_name, "test", featurizer_type, True, download_dataset, root_datasets_dir, dataset_task_name, model_type)
+    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, True, download_dataset, 
+                               root_datasets_dir, dataset_task_name, model_type)
+    testset = MoleculeDataset(dataset_name, "test", featurizer_type, True, download_dataset, 
+                              root_datasets_dir, dataset_task_name, model_type)
 
     # train and test data
     X_train, y_train = np.array(trainset.vectorized_molecules), np.ravel(np.array(trainset.labels))
@@ -68,9 +70,7 @@ def train_svm(
         leveled_off_distance_matrices = np.array(squeeze(stack(leveled_off_distance_matrices), 1))
 
         if phase == "train":
-            print(f"[BEFORE] X_train.shape: {X_train.shape}")
             X_train = np.concatenate((X_train, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
-            print(f"[AFTER] X_train.shape: {X_train.shape}")
         else:
             X_test = np.concatenate((X_test, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
 
