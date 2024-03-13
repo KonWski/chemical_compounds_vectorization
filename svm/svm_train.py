@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 import pickle
 from utils import load_yaml_config
 from torch.nn import AdaptiveAvgPool2d, Flatten, Sequential
-from torch import stack
+from torch import stack, Tensor
 
 def train_svm(
         featurizer_type: str,
@@ -59,9 +59,9 @@ def train_svm(
 
         for nf, am, dm in zip(trainset.node_features, trainset.adjacency_matrix, trainset.distance_matrices):
 
-            leveled_off_node_features.append(level_off_shape_transforms(nf))
-            leveled_off_adjacency_matrices.append(level_off_shape_transforms(am))
-            leveled_off_distance_matrices.append(level_off_shape_transforms(dm))
+            leveled_off_node_features.append(level_off_shape_transforms(Tensor(nf)))
+            leveled_off_adjacency_matrices.append(level_off_shape_transforms(Tensor(am)))
+            leveled_off_distance_matrices.append(level_off_shape_transforms(Tensor(dm)))
 
         print(stack(leveled_off_node_features).shape)
 
