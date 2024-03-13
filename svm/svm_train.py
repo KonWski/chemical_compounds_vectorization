@@ -7,6 +7,7 @@ from sklearn.preprocessing import StandardScaler
 import pickle
 from utils import load_yaml_config
 from torch.nn import AdaptiveAvgPool2d, Flatten, Sequential
+from torch import stack
 
 def train_svm(
         featurizer_type: str,
@@ -49,7 +50,20 @@ def train_svm(
 
     # extra layers necessary to make use of irregular (in shape) matrices
     level_off_shape_transforms = Sequential(AdaptiveAvgPool2d(32), Flatten())
-    print(level_off_shape_transforms(trainset.adjacency_matrix).shape)
+    
+    for dataset, X in zip([trainset, testset], [X_train, X_test]):
+
+        leveled_off_node_features = []
+        leveled_off_adjacency_matrices = []
+        leveled_off_distance_matrices = []
+
+        for nf, am, dm in zip(trainset.node_features, trainset.adjacency_matrix, trainset.distance_matrices):
+
+            leveled_off_node_features.append(level_off_shape_transforms(nf))
+            leveled_off_adjacency_matrices.append(level_off_shape_transforms(am))
+            leveled_off_distance_matrices.append(level_off_shape_transforms(dm))
+
+        print(stack(leveled_off_node_features).shape)
 
     # load params for model from yaml
     model_params, _ = load_yaml_config("svm", config_name)
