@@ -30,9 +30,6 @@ class MoleculeDataset(Dataset):
             self.w, self.dataset_task_name = self._prepare_dc_datasets(download_dataset, dataset_task_name)
         self.node_features, self.adjacency_matrix, \
             self.distance_matrices = self._prepare_dataset_for_mat(download_dataset)
-        
-        self._get_extra_features_max_sizes_()
-
         self.criterion = self._get_criterion(model_type)
         self.prediction_task = self._get_prediction_task()
 
@@ -232,10 +229,11 @@ class MoleculeDataLoader(DataLoader):
                  collate_with_max_size: bool = False):
 
         super().__init__(dataset, batch_size, shuffle)
+        self._get_extra_features_max_sizes_()
+
 
         if dataset.prepare_data_for_mat and collate_fn is None:
             self.collate_fn = self._collate_extra_features
-            self.collate_with_max_size = collate_with_max_size
         else:
             self.collate_fn = self.collate_fn
 
@@ -300,21 +298,21 @@ class MoleculeDataLoader(DataLoader):
 
     def _get_extra_features_max_sizes_(self):
 
-        print(f"type(self.node_features): {type(self.node_features)}")
+        print(f"type(self.node_features): {type(self.dataset.node_features)}")
         max_size_node_features = 0
-        for nf in self.node_features:
+        for nf in self.dataset.node_features:
             max_size_node_features = max(max_size_node_features, nf.shape[0])
         print(f"max_size_node_features: {max_size_node_features}")
 
-        print(f"type(self.adjacency_matrix): {type(self.adjacency_matrix)}")
+        print(f"type(self.adjacency_matrix): {type(self.dataset.adjacency_matrix)}")
         max_size_node_features = 0
-        for am in self.adjacency_matrix:
+        for am in self.dataset.adjacency_matrix:
             max_size_adjacency_matrix = max(max_size_adjacency_matrix, am.shape[0])
         print(f"max_size_adjacency_matrix: {max_size_adjacency_matrix}")
 
-        print(f"type(self.distance_matrices): {type(self.distance_matrices)}")
+        print(f"type(self.distance_matrices): {type(self.dataset.distance_matrices)}")
         max_size_distance_matrices = 0
-        for dm in self.adjacency_matrix:
+        for dm in self.dataset.adjacency_matrix:
             max_size_distance_matrices = max(max_size_distance_matrices, dm.shape[0])
         print(f"max_size_distance_matrices: {max_size_distance_matrices}")
 
