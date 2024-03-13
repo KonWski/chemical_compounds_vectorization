@@ -225,8 +225,7 @@ class MoleculeDataLoader(DataLoader):
                  dataset: Dataset[T_co], 
                  batch_size: Optional[int] = 1,
                  shuffle: Optional[bool] = None, 
-                 collate_fn: Optional[_collate_fn_t] = None,
-                 collate_with_max_size: bool = False):
+                 collate_fn: Optional[_collate_fn_t] = None):
 
         super().__init__(dataset, batch_size, shuffle)
         self._get_extra_features_max_sizes_()
@@ -294,27 +293,3 @@ class MoleculeDataLoader(DataLoader):
         padded_array = np.zeros(shape, dtype=dtype)
         padded_array[:array.shape[0], :array.shape[1]] = array
         return padded_array
-    
-
-    def _get_extra_features_max_sizes_(self):
-
-        print(f"type(self.node_features): {type(self.dataset.node_features)}")
-        max_size_node_features = 0
-        for nf in self.dataset.node_features:
-            max_size_node_features = max(max_size_node_features, nf.shape[0])
-        print(f"max_size_node_features: {max_size_node_features}")
-
-        print(f"type(self.adjacency_matrix): {type(self.dataset.adjacency_matrix)}")
-        max_size_node_features = 0
-        for am in self.dataset.adjacency_matrix:
-            max_size_adjacency_matrix = max(max_size_adjacency_matrix, am.shape[0])
-        print(f"max_size_adjacency_matrix: {max_size_adjacency_matrix}")
-
-        print(f"type(self.distance_matrices): {type(self.dataset.distance_matrices)}")
-        max_size_distance_matrices = 0
-        for dm in self.dataset.adjacency_matrix:
-            max_size_distance_matrices = max(max_size_distance_matrices, dm.shape[0])
-        print(f"max_size_distance_matrices: {max_size_distance_matrices}")
-
-        pass
-        # max sizes of node_features, adjacency_matrices, distance_matrices
