@@ -124,7 +124,7 @@ def train_mat(
             checkpoint['yaml_config_path'] = yaml_config_path
             checkpoint['dataset_task_name'] = trainset.dataset_task_name
 
-            save_checkpoint(checkpoint, checkpoint_path, f"{model_type}_{dataset_name}")
+            save_checkpoint(checkpoint, checkpoint_path, f"{model_type}_epoch_{epoch}_{dataset_name}")
 
         else:
             logging.info(8*"-")
