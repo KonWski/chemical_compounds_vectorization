@@ -12,7 +12,7 @@ def get_args():
     parser.add_argument('--batch_size', type=int, help='Number of images in batch')
     parser.add_argument('--root_datasets_dir', type=str, help='Path where dataset should be downloaded or where is it already stored')
     parser.add_argument('--dataset_name', type=str, help='Name of dataset available through MoleculeNet', 
-                        choices=["HIV", "TOX21", "Delaney"])
+                        choices=["HIV", "TOX21", "Delaney", "Sider"])
     parser.add_argument('--dataset_task_name', type=str, help="task used for filtering down tox21 dataset")
     parser.add_argument('--download_dataset', type=str, help='Download dataset from MoleculeNet')
     parser.add_argument('--model_type', type=str, help="Type of model which will be trained", 
