@@ -166,13 +166,13 @@ class MoleculeDataset(Dataset):
 
             split_id = 0 if self.split == "train" else 2
             smiles, X, y, w = datasets[split_id].ids, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
-            
+
             # fiter out task
             if dataset_task_name:
                 task_id = dataset_tasks.index(dataset_task_name)
                 y = y[:,task_id]
             elif len(dataset_tasks) == 1:
-                dataset_task_name = dataset_tasks[dataset_tasks[0]]
+                dataset_task_name = dataset_tasks[0]
             else:
                 raise Exception("Please specify dataset task name - dataset consists of more than 1 task.")
 
