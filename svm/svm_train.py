@@ -52,7 +52,7 @@ def train_svm(
     X_test, y_test = np.array(testset.vectorized_molecules), np.ravel(np.array(testset.labels))
 
     # extra layers necessary to make use of irregular (in shape) matrices
-    level_off_shape_transforms = Sequential(AdaptiveAvgPool2d(10), Flatten())
+    level_off_shape_transforms = Sequential(AdaptiveAvgPool2d(6), Flatten())
     
     for phase, dataset in zip(["train", "test"], [trainset, testset]):
 
