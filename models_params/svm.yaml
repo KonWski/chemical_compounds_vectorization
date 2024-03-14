@@ -6,6 +6,9 @@ rbf_gamma_auto:
 rgf_gamma_float:
   kernel: "rbf"
   gamma: 0.001
+rbf_class_weight_balanced:
+  kernel: "rbf"
+  class_weight: "balanced"
 linear:
   kernel: "linear"
 polynomial:
