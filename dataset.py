@@ -116,15 +116,14 @@ class MoleculeDataset(Dataset):
 
                 with open(node_features_path, "wb") as fp:
                     pickle.dump(node_features, fp)
-                    logging.info(f"Node features saved to {node_features_path}")
 
                 with open(adjacency_matrices_path, "wb") as fp:
                     pickle.dump(adjacency_matrices, fp)
-                    logging.info(f"Adjacency matrices saved to {adjacency_matrices_path}")
 
                 with open(distance_matrices_path, "wb") as fp:
                     pickle.dump(distance_matrices, fp)
-                    logging.info(f"Distance matrices saved to {distance_matrices_path}")
+
+                logging.info(f"Extra features saved to {self.dataset_split_path}")
 
         return node_features, adjacency_matrices, distance_matrices
 
