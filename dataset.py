@@ -140,8 +140,11 @@ class MoleculeDataset(Dataset):
 
         smiles_path = f"{self.dataset_split_path}/smiles_{self.split}.npy"
         X_path = f"{self.dataset_split_path}/X_{self.split}.npy"
-        y_path = f"{self.dataset_split_path}/y_{dataset_task_name.lower().replace(' ', '_')}_{self.split}.npy"
         w_path = f"{self.dataset_split_path}/w_{self.split}.npy"
+        if dataset_task_name:
+            y_path = f"{self.dataset_split_path}/y_{dataset_task_name.lower().replace(' ', '_')}_{self.split}.npy"
+        else:
+            y_path = f"{self.dataset_split_path}/y_{self.split}.npy"       
         split_dataset_already_downloaded = os.path.isfile(smiles_path) and os.path.isfile(X_path) \
             and os.path.isfile(y_path) and os.path.isfile(w_path)
 
