@@ -159,6 +159,8 @@ class MoleculeDataset(Dataset):
                 dataset_tasks, datasets, _ = dc.molnet.load_delaney(featurizer=self.featurizer)
             elif self.dc_dataset_name == "Sider":
                 dataset_tasks, datasets, _ = dc.molnet.load_sider(featurizer=self.featurizer)
+            elif self.dc_dataset_name == "BACE":
+                dataset_tasks, datasets, _ = dc.molnet.load_bace_classification(featurizer=self.featurizer)
             else:
                 raise Exception(f"Dataset {self.dataset_name} not implemented.")
 
@@ -186,7 +188,7 @@ class MoleculeDataset(Dataset):
     def _get_criterion(self, model_type: str):
 
         # download datasets from deepchem
-        if self.dc_dataset_name in ["HIV", "TOX21", "Sider"]:
+        if self.dc_dataset_name in ["HIV", "TOX21", "Sider", "BACE"]:
             if model_type == "mat":
                 return BCELoss()
             elif model_type == "svm":
@@ -205,7 +207,7 @@ class MoleculeDataset(Dataset):
     def _get_prediction_task(self):
 
         # download datasets from deepchem
-        if self.dc_dataset_name in ["HIV", "TOX21", "Sider"]:
+        if self.dc_dataset_name in ["HIV", "TOX21", "Sider", "BACE"]:
             prediction_task = "classification"
         elif self.dc_dataset_name == "Delaney":
             prediction_task = "regression"
