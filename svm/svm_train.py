@@ -91,7 +91,7 @@ def train_svm(
         logging.info(f"state: {state}, loss: {loss}")
     
     # save model to checkpoint path
-    saved_model_name = f"svm_{config_name}.pkl"
+    saved_model_name = f"svm_{dataset_name}_{config_name}.pkl"
     pickle_path = f"{checkpoint_path}/{saved_model_name}"
 
     with open(pickle_path, "wb") as f:
