@@ -3,6 +3,9 @@ default:
 rbf_gamma_auto:
   kernel: "rbf"
   gamma: "auto"
+rgf_gamma_0001:
+  kernel: "rbf"
+  gamma: 0.0001
 rgf_gamma_001:
   kernel: "rbf"
   gamma: 0.001
