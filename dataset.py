@@ -140,7 +140,7 @@ class MoleculeDataset(Dataset):
 
         smiles_path = f"{self.dataset_split_path}/smiles_{self.split}.npy"
         X_path = f"{self.dataset_split_path}/X_{self.split}.npy"
-        y_path = f"{self.dataset_split_path}/y_{self.split}.npy"
+        y_path = f"{self.dataset_split_path}/y_{dataset_task_name.lower().replace(" ", "_")}_{self.split}.npy"
         w_path = f"{self.dataset_split_path}/w_{self.split}.npy"
         split_dataset_already_downloaded = os.path.isfile(smiles_path) and os.path.isfile(X_path) \
             and os.path.isfile(y_path) and os.path.isfile(w_path)
@@ -170,6 +170,12 @@ class MoleculeDataset(Dataset):
             split_id = 0 if self.split == "train" else 2
             smiles, X, y, w = datasets[split_id].ids, datasets[split_id].X, datasets[split_id].y, datasets[split_id].w
 
+            if download_dataset:
+                np.save(smiles_path, smiles)
+                np.save(X_path, X)
+                np.save(y_path, y)
+                np.save(w_path, w)
+
             # fiter out task
             if dataset_task_name:
                 task_id = dataset_tasks.index(dataset_task_name)
@@ -178,12 +184,6 @@ class MoleculeDataset(Dataset):
                 dataset_task_name = dataset_tasks[0]
             else:
                 raise Exception("Please specify dataset task name - dataset consists of more than 1 task.")
-
-            if download_dataset:
-                np.save(smiles_path, smiles)
-                np.save(X_path, X)
-                np.save(y_path, y)
-                np.save(w_path, w)
 
         return smiles, X, y, w, dataset_task_name
 
