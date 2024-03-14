@@ -1,6 +1,7 @@
 from dataset import MoleculeDataset
 import logging
 from sklearn import svm
+from sklearn.metrics import classification_report
 import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -89,6 +90,7 @@ def train_svm(
         y_predicted = pipeline.predict(X)
         loss = round(criterion(y_true=y, y_pred=y_predicted), 2)
         logging.info(f"state: {state}, loss: {loss}")
+        print(classification_report(y, y_predicted))
     
     # save model to checkpoint path
     saved_model_name = f"svm_{dataset_name}_{config_name}.pkl"
