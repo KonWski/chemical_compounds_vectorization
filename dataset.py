@@ -9,6 +9,7 @@ from typing import Any, Callable, TypeVar, List, Optional
 import torch
 from torch.nn import BCELoss, MSELoss
 from sklearn.metrics import mean_squared_error, log_loss
+import logging
 
 T_co = TypeVar('T_co', covariant=True)
 T = TypeVar('T')
@@ -115,12 +116,15 @@ class MoleculeDataset(Dataset):
 
                 with open(node_features_path, "wb") as fp:
                     pickle.dump(node_features, fp)
+                    logging.info(f"Node features saved to {node_features_path}")
 
                 with open(adjacency_matrices_path, "wb") as fp:
                     pickle.dump(adjacency_matrices, fp)
+                    logging.info(f"Adjacency matrices saved to {adjacency_matrices_path}")
 
                 with open(distance_matrices_path, "wb") as fp:
                     pickle.dump(distance_matrices, fp)
+                    logging.info(f"Distance matrices saved to {distance_matrices_path}")
 
         return node_features, adjacency_matrices, distance_matrices
 
