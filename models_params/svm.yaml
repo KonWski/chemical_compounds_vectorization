@@ -3,40 +3,40 @@ default:
 rbf_gamma_auto:
   kernel: "rbf"
   gamma: "auto"
-rgf_gamma_0001:
+rbf_gamma_0001:
   kernel: "rbf"
   gamma: 0.0001
-rgf_gamma_001:
+rbf_gamma_001:
   kernel: "rbf"
   gamma: 0.001
-rgf_gamma_01:
+rbf_gamma_01:
   kernel: "rbf"
   gamma: 0.1
-rgf_gamma_02:
+rbf_gamma_02:
   kernel: "rbf"
   gamma: 0.2
-rgf_gamma_03:
+rbf_gamma_03:
   kernel: "rbf"
   gamma: 0.3
-rgf_gamma_04:
+rbf_gamma_04:
   kernel: "rbf"
   gamma: 0.4
-rgf_gamma_05:
+rbf_gamma_05:
   kernel: "rbf"
   gamma: 0.5
-rgf_gamma_06:
+rbf_gamma_06:
   kernel: "rbf"
   gamma: 0.6
-rgf_gamma_07:
+rbf_gamma_07:
   kernel: "rbf"
   gamma: 0.7
-rgf_gamma_08:
+rbf_gamma_08:
   kernel: "rbf"
   gamma: 0.8
-rgf_gamma_09:
+rbf_gamma_09:
   kernel: "rbf"
   gamma: 0.9
-rgf_gamma_1:
+rbf_gamma_1:
   kernel: "rbf"
   gamma: 1.0
 rbf_class_weight_balanced:
@@ -46,6 +46,12 @@ linear:
   kernel: "linear"
 polynomial:
   kernel: "poly"
+polynomial_degree_4:
+  kernel: "poly"
+  degree: 4
+polynomial_degree_5:
+  kernel: "poly"
+  degree: 5
 sigmoid:
   kernel: "sigmoid"
 precomputed:
