@@ -1,8 +1,11 @@
 default:
   kernel: "rbf"
-rbf_auto:
+rbf_gamma_auto:
   kernel: "rbf"
   gamma: "auto"
+rgf_gamma_float:
+  kernel: "rbf"
+  gamma: 0.001
 linear:
   kernel: "linear"
 polynomial:
