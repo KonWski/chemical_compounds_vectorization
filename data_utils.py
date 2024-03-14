@@ -76,7 +76,7 @@ def load_data_from_smiles(x_smiles, labels, add_dummy_node=True, one_hot_formal_
         and y is a list of the corresponding labels.
     """
     x_all, y_all = [], []
-
+    
     for smiles, label in zip(x_smiles, labels):
         try:
             mol = MolFromSmiles(smiles)
