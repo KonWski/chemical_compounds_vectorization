@@ -171,7 +171,7 @@ class MoleculeDataset(Dataset):
             if dataset_task_name:
                 task_id = dataset_tasks.index(dataset_task_name)
                 y = y[:,task_id]
-            elif len(dataset_task_name) == 1:
+            elif len(dataset_tasks) == 1:
                 dataset_task_name = dataset_tasks[dataset_task_name]
             else:
                 raise Exception("Please specify dataset task name - dataset consists of more than 1 task.")
