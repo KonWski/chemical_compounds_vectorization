@@ -1,5 +1,8 @@
 default:
   kernel: "rbf"
+rbf_auto:
+  kernel: "rbf"
+  gamma: "auto"
 linear:
   kernel: "linear"
 polynomial:
