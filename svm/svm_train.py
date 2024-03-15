@@ -13,6 +13,7 @@ from torch import stack, Tensor, unsqueeze, squeeze
 def train_svm(
         featurizer_type: str,
         dataset_name: str,
+        stratifier: str,
         download_dataset: bool,
         root_datasets_dir: str,
         checkpoint_path: str,
@@ -42,9 +43,9 @@ def train_svm(
     '''
 
     # datasets
-    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, True, download_dataset, 
+    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, stratifier, True, download_dataset, 
                                root_datasets_dir, dataset_task_name, model_type)
-    testset = MoleculeDataset(dataset_name, "test", featurizer_type, True, download_dataset, 
+    testset = MoleculeDataset(dataset_name, "test", featurizer_type, stratifier, True, download_dataset, 
                               root_datasets_dir, dataset_task_name, model_type)
 
     # train and test data

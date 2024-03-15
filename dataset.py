@@ -17,18 +17,19 @@ _collate_fn_t = Callable[[List[T]], Any]
 
 class MoleculeDataset(Dataset):
 
-    def __init__(self, dc_dataset_name: str, split: str, featurizer: str, prepare_data_for_mat: bool,
+    def __init__(self, dc_dataset_name: str, split: str, featurizer: str, stratifier: str, prepare_data_for_mat: bool,
                  download_dataset: bool = False, root_datasets_dir: str = "", dataset_task_name: str = None, 
                  model_type: str = None) -> None:
        
         self.dc_dataset_name = dc_dataset_name
         self.split = split
         self.featurizer = featurizer
+        self.stratifier = stratifier
         self.prepare_data_for_mat = prepare_data_for_mat
         self.root_datasets_dir = root_datasets_dir
         self.dataset_path, self.dataset_split_path = self._prepare_directories(download_dataset)
         self.smiles, self.vectorized_molecules, self.labels, \
-            self.w, self.dataset_task_name = self._prepare_dc_datasets(download_dataset, dataset_task_name)
+            self.w, self.dataset_task_name = self._prepare_dc_datasets(download_dataset, stratifier, dataset_task_name)
         self.node_features, self.adjacency_matrix, \
             self.distance_matrices = self._prepare_dataset_for_mat(download_dataset)
         self.criterion = self._get_criterion(model_type)
@@ -128,7 +129,7 @@ class MoleculeDataset(Dataset):
         return node_features, adjacency_matrices, distance_matrices
 
 
-    def _prepare_dc_datasets(self, download_dataset: bool, dataset_task_name: str):
+    def _prepare_dc_datasets(self, download_dataset: bool, stratifier: str, dataset_task_name: str):
         '''
         Downloads dataset from Deepchem MoleculeNet
         
@@ -158,15 +159,15 @@ class MoleculeDataset(Dataset):
 
             # download datasets from deepchem
             if self.dc_dataset_name == "HIV":
-                dataset_tasks, datasets, _ = dc.molnet.load_hiv(featurizer=self.featurizer)
+                dataset_tasks, datasets, _ = dc.molnet.load_hiv(featurizer=self.featurizer, stratifier=stratifier)
             elif self.dc_dataset_name == "TOX21":
-                dataset_tasks, datasets, _ = dc.molnet.load_tox21(featurizer=self.featurizer)
+                dataset_tasks, datasets, _ = dc.molnet.load_tox21(featurizer=self.featurizer, stratifier=stratifier)
             elif self.dc_dataset_name == "Delaney":
-                dataset_tasks, datasets, _ = dc.molnet.load_delaney(featurizer=self.featurizer)
+                dataset_tasks, datasets, _ = dc.molnet.load_delaney(featurizer=self.featurizer, stratifier=stratifier)
             elif self.dc_dataset_name == "Sider":
-                dataset_tasks, datasets, _ = dc.molnet.load_sider(featurizer=self.featurizer)
+                dataset_tasks, datasets, _ = dc.molnet.load_sider(featurizer=self.featurizer, stratifier=stratifier)
             elif self.dc_dataset_name == "BACE":
-                dataset_tasks, datasets, _ = dc.molnet.load_bace_classification(featurizer=self.featurizer)
+                dataset_tasks, datasets, _ = dc.molnet.load_bace_classification(featurizer=self.featurizer, stratifier=stratifier)
             else:
                 raise Exception(f"Dataset {self.dataset_name} not implemented.")
 
