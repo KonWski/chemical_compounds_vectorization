@@ -13,7 +13,7 @@ def get_args():
     parser.add_argument('--root_datasets_dir', type=str, help='Path where dataset should be downloaded or where is it already stored')
     parser.add_argument('--dataset_name', type=str, help='Name of dataset available through MoleculeNet', 
                         choices=["HIV", "TOX21", "Delaney", "Sider", "BACE"])
-    parser.add_argument('--stratifier', type=str, help='Stratifier used for train/test splitting', default='scaffold')
+    parser.add_argument('--splitter', type=str, help='splitter used for train/test splitting', default='scaffold')
     parser.add_argument('--dataset_task_name', type=str, help="task used for filtering down tox21 dataset")
     parser.add_argument('--download_dataset', type=str, help='Download dataset from MoleculeNet')
     parser.add_argument('--model_type', type=str, help="Type of model which will be trained", 
@@ -62,13 +62,13 @@ if __name__ == "__main__":
 
     if args["model_type"] == "mat":
 
-        model = train_mat(device, args["n_epochs"], args["dataset_name"], args["stratifier"], args["download_dataset"], 
+        model = train_mat(device, args["n_epochs"], args["dataset_name"], args["splitter"], args["download_dataset"], 
                             args["root_datasets_dir"], args["checkpoint_path"], args["batch_size"], 
                             args["model_type"], args["load_model"], args["featurizer_type"], args["config_name"], 
                             args["dataset_task_name"])
 
     elif args["model_type"] == "svm":
 
-        model = train_svm(args["featurizer_type"], args["dataset_name"], args["stratifier"], args["download_dataset"], 
+        model = train_svm(args["featurizer_type"], args["dataset_name"], args["splitter"], args["download_dataset"], 
                             args["root_datasets_dir"], args["checkpoint_path"], args["config_name"], 
                             args["dataset_task_name"], args["model_type"])

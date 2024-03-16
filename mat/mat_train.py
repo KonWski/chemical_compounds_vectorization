@@ -10,7 +10,7 @@ def train_mat(
         device, 
         n_epochs: int,
         dataset_name: str,
-        stratifier: str,
+        splitter: str,
         download_dataset: bool,
         root_datasets_dir: str,
         checkpoint_path: str,
@@ -51,11 +51,11 @@ def train_mat(
     '''
 
     # datasets and dataloaders
-    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, stratifier, True, download_dataset, 
+    trainset = MoleculeDataset(dataset_name, "train", featurizer_type, splitter, True, download_dataset, 
                                root_datasets_dir, dataset_task_name, model_type)
     train_loader = MoleculeDataLoader(trainset, batch_size=batch_size, shuffle=True)
 
-    testset = MoleculeDataset(dataset_name, "test", featurizer_type, stratifier, True, download_dataset, 
+    testset = MoleculeDataset(dataset_name, "test", featurizer_type, splitter, True, download_dataset, 
                               root_datasets_dir, dataset_task_name, model_type)
     test_loader = MoleculeDataLoader(testset, batch_size=batch_size, shuffle=True)
 
