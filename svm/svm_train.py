@@ -65,6 +65,11 @@ def train_svm(
         leveled_off_distance_matrices = []
 
         for nf, am, dm in zip(dataset.node_features, dataset.adjacency_matrix, dataset.distance_matrices):
+            
+            print(f"nf.shape: {nf.shape}")
+            print(f"am.shape: {am.shape}")
+            print(f"dm.shape: {dm.shape}")
+            
 
             leveled_off_node_features.append(level_off_shape_transforms(unsqueeze(Tensor(nf), 0)))
             leveled_off_adjacency_matrices.append(level_off_shape_transforms(unsqueeze(Tensor(am), 0)))
