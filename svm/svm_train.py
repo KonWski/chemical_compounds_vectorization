@@ -74,6 +74,10 @@ def train_svm(
         leveled_off_adjacency_matrices = np.array(squeeze(stack(leveled_off_adjacency_matrices), 1))
         leveled_off_distance_matrices = np.array(squeeze(stack(leveled_off_distance_matrices), 1))
 
+        print(f"leveled_off_node_features.shape: {leveled_off_node_features.shape}")
+        print(f"leveled_off_adjacency_matrices.shape: {leveled_off_adjacency_matrices.shape}")
+        print(f"leveled_off_distance_matrices.shape: {leveled_off_distance_matrices.shape}")
+
         if phase == "train":
             X_train = np.concatenate((X_train, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
         else:
