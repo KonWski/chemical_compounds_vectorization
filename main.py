@@ -62,13 +62,13 @@ if __name__ == "__main__":
 
     if args["model_type"] == "mat":
 
-        model = train_mat(device, args["n_epochs"], args["dataset_name"], args["download_dataset"], 
+        model = train_mat(device, args["n_epochs"], args["dataset_name"], args["stratifier"], args["download_dataset"], 
                             args["root_datasets_dir"], args["checkpoint_path"], args["batch_size"], 
                             args["model_type"], args["load_model"], args["featurizer_type"], args["config_name"], 
                             args["dataset_task_name"])
 
     elif args["model_type"] == "svm":
 
-        model = train_svm(args["featurizer_type"], args["dataset_name"], args["download_dataset"], 
+        model = train_svm(args["featurizer_type"], args["dataset_name"], args["stratifier"], args["download_dataset"], 
                             args["root_datasets_dir"], args["checkpoint_path"], args["config_name"], 
                             args["dataset_task_name"], args["model_type"])
