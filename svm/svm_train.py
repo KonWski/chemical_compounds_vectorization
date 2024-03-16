@@ -52,30 +52,35 @@ def train_svm(
     X_train, y_train = np.array(trainset.vectorized_molecules), np.ravel(np.array(trainset.labels))
     X_test, y_test = np.array(testset.vectorized_molecules), np.ravel(np.array(testset.labels))
 
+    print(f"[BEFORE] X_train.shape: {X_train.shape}")
+    print(f"[BEFORE] X_test.shape: {X_test.shape}")
+
     # extra layers necessary to make use of irregular (in shape) matrices
     level_off_shape_transforms = Sequential(AdaptiveAvgPool2d(6), Flatten())
     
-    # for phase, dataset in zip(["train", "test"], [trainset, testset]):
+    for phase, dataset in zip(["train", "test"], [trainset, testset]):
 
-    #     leveled_off_node_features = []
-    #     leveled_off_adjacency_matrices = []
-    #     leveled_off_distance_matrices = []
+        leveled_off_node_features = []
+        leveled_off_adjacency_matrices = []
+        leveled_off_distance_matrices = []
 
-    #     for nf, am, dm in zip(dataset.node_features, dataset.adjacency_matrix, dataset.distance_matrices):
+        for nf, am, dm in zip(dataset.node_features, dataset.adjacency_matrix, dataset.distance_matrices):
 
-    #         leveled_off_node_features.append(level_off_shape_transforms(unsqueeze(Tensor(nf), 0)))
-    #         leveled_off_adjacency_matrices.append(level_off_shape_transforms(unsqueeze(Tensor(am), 0)))
-    #         leveled_off_distance_matrices.append(level_off_shape_transforms(unsqueeze(Tensor(dm), 0)))
+            leveled_off_node_features.append(level_off_shape_transforms(unsqueeze(Tensor(nf), 0)))
+            leveled_off_adjacency_matrices.append(level_off_shape_transforms(unsqueeze(Tensor(am), 0)))
+            leveled_off_distance_matrices.append(level_off_shape_transforms(unsqueeze(Tensor(dm), 0)))
 
-    #     leveled_off_node_features = np.array(squeeze(stack(leveled_off_node_features), 1))
-    #     leveled_off_adjacency_matrices = np.array(squeeze(stack(leveled_off_adjacency_matrices), 1))
-    #     leveled_off_distance_matrices = np.array(squeeze(stack(leveled_off_distance_matrices), 1))
+        leveled_off_node_features = np.array(squeeze(stack(leveled_off_node_features), 1))
+        leveled_off_adjacency_matrices = np.array(squeeze(stack(leveled_off_adjacency_matrices), 1))
+        leveled_off_distance_matrices = np.array(squeeze(stack(leveled_off_distance_matrices), 1))
 
-    #     if phase == "train":
-    #         X_train = np.concatenate((X_train, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
-    #     else:
-    #         X_test = np.concatenate((X_test, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
+        if phase == "train":
+            X_train = np.concatenate((X_train, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
+        else:
+            X_test = np.concatenate((X_test, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
 
+    print(f"[AFTER] X_train.shape: {X_train.shape}")
+    print(f"[AFTER] X_test.shape: {X_test.shape}")
     # load params for model from yaml
     model_params, _ = load_yaml_config("svm", config_name)
 
