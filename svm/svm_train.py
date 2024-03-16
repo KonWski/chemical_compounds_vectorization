@@ -65,11 +65,6 @@ def train_svm(
         leveled_off_distance_matrices = []
 
         for nf, am, dm in zip(dataset.node_features, dataset.adjacency_matrix, dataset.distance_matrices):
-            
-            print(f"nf.shape: {nf.shape}")
-            print(f"am.shape: {am.shape}")
-            print(f"dm.shape: {dm.shape}")
-            
 
             leveled_off_node_features.append(level_off_shape_transforms(unsqueeze(Tensor(nf), 0)))
             leveled_off_adjacency_matrices.append(level_off_shape_transforms(unsqueeze(Tensor(am), 0)))
@@ -84,8 +79,6 @@ def train_svm(
         else:
             X_test = np.concatenate((X_test, leveled_off_node_features, leveled_off_adjacency_matrices, leveled_off_distance_matrices), axis=1)    
 
-    print(f"[AFTER] X_train.shape: {X_train.shape}")
-    print(f"[AFTER] X_test.shape: {X_test.shape}")
     # load params for model from yaml
     model_params, _ = load_yaml_config("svm", config_name)
 
