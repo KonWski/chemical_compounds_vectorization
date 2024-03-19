@@ -113,9 +113,9 @@ def train_mat(
                     if trainset.prediction_task == "classification":
                         outputs = torch.sigmoid(outputs)
 
-                    print(f"outputs: {outputs}")
-                    print(f"labels: {labels.cpu().detach().numpy()}")
-                    loss = criterion(outputs, labels.cpu().detach().numpy())
+                    # print(f"outputs: {outputs}")
+                    # print(f"labels: {labels.cpu().detach().numpy()}")
+                    loss = criterion(outputs.cpu().detach().numpy(), labels.cpu().detach().numpy())
 
                     if state == "train":
                         loss.backward()
