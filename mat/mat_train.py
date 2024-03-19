@@ -102,6 +102,8 @@ def train_mat(
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
 
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
+                    if dataset_task_name == "classification":
+                        outputs = torch.sigmoid(outputs)
                     print(f"outputs: {outputs}")
                     print(f"labels: {labels}")
 
