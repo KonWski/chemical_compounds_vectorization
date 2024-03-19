@@ -274,7 +274,7 @@ class MoleculeDataLoader(DataLoader):
 
             # convert deepchem labels to torch like labels
             if self.dataset.prediction_task == "classification":
-                print(labels_list)
+                labels_list = [arr[0] for arr in labels_list]
                 labels = np.array(labels_list)
                 labels_tensor = np.zeros((labels.size, 2)) # only binary classification
                 labels_tensor[np.arange(labels.size), labels] = 1
