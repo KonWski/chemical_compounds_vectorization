@@ -5,6 +5,8 @@ import logging
 from mat.mat_model import make_model, load_checkpoint, save_checkpoint
 from datetime import datetime
 from utils import load_yaml_config
+from sklearn.metrics import roc_auc_score
+from torch import softmax
 
 def train_mat(
         device, 
@@ -111,7 +113,15 @@ def train_mat(
 
             # save and log epoch statistics
             checkpoint["test_loss"] = round(running_loss / len_dataset, 2)
-            logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}")
+            
+            if dataset_task_name == "classification":
+                proba = softmax(outputs, 1)
+                auc = roc_auc_score(labels, proba)
+
+                logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
+
+            else:
+                logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
 
         if checkpoint["test_loss"] < best_test_loss:
             
