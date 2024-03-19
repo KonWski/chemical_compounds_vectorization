@@ -79,6 +79,8 @@ def train_mat(
         best_test_loss = float("inf")
         start_epoch = 0
 
+    model = model.to(device)
+
     for epoch in range(start_epoch, n_epochs):
 
         checkpoint = {}
@@ -101,11 +103,17 @@ def train_mat(
                     _, _, labels, _, node_features, adjacency_matrices, distance_matrices = batch
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
 
+                    labels = labels.to(device)
+                    node_features = node_features.to(device)
+                    adjacency_matrices = adjacency_matrices.to(device)
+                    distance_matrices = distance_matrices.to(device)
+                    batch_mask = batch_mask.to(device)
+
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
                     if trainset.prediction_task == "classification":
                         outputs = torch.sigmoid(outputs)
-                        
-                    loss = criterion(outputs, labels)
+
+                    loss = criterion(outputs, labels.detach().numpy())
 
                     if state == "train":
                         loss.backward()
