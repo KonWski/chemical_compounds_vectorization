@@ -129,6 +129,8 @@ def train_mat(
             
             if trainset.prediction_task == "classification":
                 proba = softmax(outputs, 1)
+                print(labels)
+                print(outputs)
                 auc = roc_auc_score(labels.cpu().detach().numpy(), outputs.cpu().detach().numpy())
 
                 logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
