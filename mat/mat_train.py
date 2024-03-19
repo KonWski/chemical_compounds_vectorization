@@ -104,9 +104,7 @@ def train_mat(
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
                     if trainset.prediction_task == "classification":
                         outputs = torch.sigmoid(outputs)
-                    print(f"outputs: {outputs}")
-                    print(f"labels: {labels}")
-
+                        
                     loss = criterion(outputs, labels)
 
                     if state == "train":
