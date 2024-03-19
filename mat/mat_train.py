@@ -127,16 +127,18 @@ def train_mat(
             # save and log epoch statistics
             checkpoint["test_loss"] = round(running_loss / len_dataset, 2)
             
-            if trainset.prediction_task == "classification":
-                proba = softmax(outputs, 1)
-                print(labels)
-                print(outputs)
-                auc = roc_auc_score(labels.cpu().detach().numpy(), outputs.cpu().detach().numpy())
+            # if trainset.prediction_task == "classification":
+            #     proba = softmax(outputs, 1)
+            #     print(labels)
+            #     print(outputs)
+            #     auc = roc_auc_score(labels.cpu().detach().numpy(), outputs.cpu().detach().numpy())
 
-                logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
+            #     logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
 
-            else:
-                logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
+            # else:
+            #     logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
+
+            logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
 
         if checkpoint["test_loss"] < best_test_loss:
             
