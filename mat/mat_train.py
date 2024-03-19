@@ -102,7 +102,7 @@ def train_mat(
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
 
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
-                    if dataset_task_name == "classification":
+                    if trainset.prediction_task == "classification":
                         outputs = torch.sigmoid(outputs)
                     print(f"outputs: {outputs}")
                     print(f"labels: {labels}")
@@ -119,7 +119,7 @@ def train_mat(
             # save and log epoch statistics
             checkpoint["test_loss"] = round(running_loss / len_dataset, 2)
             
-            if dataset_task_name == "classification":
+            if trainset.prediction_task == "classification":
                 proba = softmax(outputs, 1)
                 auc = roc_auc_score(labels, proba)
 
