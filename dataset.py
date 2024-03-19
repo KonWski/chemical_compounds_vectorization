@@ -253,8 +253,8 @@ class MoleculeDataLoader(DataLoader):
 
                 smiles_list.append(smiles)
                 vectorized_molecules_list.append(vectorized_molecule)
+                w_list.append(w)                
                 labels_list.append(label)
-                w_list.append(w)
 
                 if adjacency_matrix.shape[0] > max_size:
                     max_size = adjacency_matrix.shape[0]
@@ -271,9 +271,16 @@ class MoleculeDataLoader(DataLoader):
             node_features_list = torch.Tensor(np.array(node_features_list)) 
             adjacency_matrices_list = torch.Tensor(np.array(adjacency_matrices_list)) 
             distance_matrices_list = torch.Tensor(np.array(distance_matrices_list)) 
-            labels_list = torch.Tensor(np.array(labels_list)) 
 
-            return [smiles_list, vectorized_molecules_list, labels_list, w_list, \
+            # convert deepchem labels to torch like labels
+            if self.dataset.prediction_task == "classification":
+                labels = np.array(labels_list)
+                labels_tensor = np.zeros((labels.size, 2)) # only binary classification
+                labels_tensor[np.arange(labels.size), labels] = 1
+            else:
+                labels_tensor = torch.Tensor(np.array(labels_list)) 
+
+            return [smiles_list, vectorized_molecules_list, labels_tensor, w_list, \
                 node_features_list, adjacency_matrices_list, distance_matrices_list]
              
         else:
