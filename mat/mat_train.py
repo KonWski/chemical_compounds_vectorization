@@ -138,7 +138,7 @@ def train_mat(
             # else:
             #     logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
 
-            logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
+            logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}")
 
         if checkpoint["test_loss"] < best_test_loss:
             
