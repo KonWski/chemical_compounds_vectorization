@@ -10,3 +10,4 @@ default:
   distance_matrix_kernel: exp 
   dropout: 0.0
   aggregation_type: mean
+  n_output: 2
