@@ -278,6 +278,7 @@ class MoleculeDataLoader(DataLoader):
                 labels = np.array(labels_list)
                 labels_tensor = np.zeros((labels.size, 2)) # only binary classification
                 labels_tensor[np.arange(labels.size), labels] = 1
+                print(labels_tensor)
             else:
                 labels_tensor = torch.Tensor(np.array(labels_list)) 
 
