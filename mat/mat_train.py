@@ -102,6 +102,9 @@ def train_mat(
                     batch_mask = torch.sum(torch.abs(node_features), dim=-1) != 0
 
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
+                    print(f"outputs: {outputs}")
+                    print(f"labels: {labels}")
+
                     loss = criterion(outputs, labels)
 
                     if state == "train":
