@@ -89,6 +89,8 @@ def train_mat(
 
             # calculated parameters
             running_loss = 0.0
+            y_pred = []
+            y = []
             criterion = trainset.criterion
 
             if state == "train":
@@ -109,9 +111,14 @@ def train_mat(
                     distance_matrices = distance_matrices.to(device)
                     batch_mask = batch_mask.to(device)
 
+                    y.append(int(labels.tolist()[1]))
+
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
                     if trainset.prediction_task == "classification":
                         outputs = torch.sigmoid(outputs)
+                        outputs_softmaxed = torch.softmax(outputs)
+                        pred = torch.round(outputs_softmaxed)
+                        y_pred.append(int(pred.tolist()[1]))
 
                     # print(f"outputs: {outputs.cpu().detach().numpy()}")
                     # print(f"labels: {labels.cpu().detach().numpy()}")
@@ -126,19 +133,9 @@ def train_mat(
 
             # save and log epoch statistics
             checkpoint["test_loss"] = round(running_loss / len_dataset, 2)
-            
-            # if trainset.prediction_task == "classification":
-            #     proba = softmax(outputs, 1)
-            #     print(labels)
-            #     print(outputs)
-            #     auc = roc_auc_score(labels.cpu().detach().numpy(), outputs.cpu().detach().numpy())
+            roc_auc = round(roc_auc_score(y, y_pred), 2)
 
-            #     logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
-
-            # else:
-            #     logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}, auc: {auc}")
-
-            logging.info(f"Epoch: {epoch}, state: {state}, loss: {checkpoint['test_loss']}")
+            logging.info(f"Epoch: {epoch}, state: {state}, roc_auc: {roc_auc}, loss: {checkpoint['test_loss']}")
 
         if checkpoint["test_loss"] < best_test_loss:
             
