@@ -135,6 +135,8 @@ def train_mat(
 
             # save and log epoch statistics
             checkpoint["test_loss"] = round(running_loss / len_dataset, 2)
+            print(y)
+            print(y_pred)
             roc_auc = round(roc_auc_score(y, y_pred), 2)
 
             logging.info(f"Epoch: {epoch}, state: {state}, roc_auc: {roc_auc}, loss: {checkpoint['test_loss']}")
