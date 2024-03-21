@@ -111,14 +111,14 @@ def train_mat(
                     distance_matrices = distance_matrices.to(device)
                     batch_mask = batch_mask.to(device)
                     
-                    print(labels)
-                    y.append(int(labels.tolist()[1]))
+                    y.append(labels[:,1].tolist())
 
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
                     if trainset.prediction_task == "classification":
                         outputs = torch.sigmoid(outputs)
                         outputs_softmaxed = torch.softmax(outputs)
                         pred = torch.round(outputs_softmaxed)
+                        print(pred)
                         y_pred.append(int(pred.tolist()[1]))
 
                     # print(f"outputs: {outputs.cpu().detach().numpy()}")
