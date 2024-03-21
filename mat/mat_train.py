@@ -110,7 +110,8 @@ def train_mat(
                     adjacency_matrices = adjacency_matrices.to(device)
                     distance_matrices = distance_matrices.to(device)
                     batch_mask = batch_mask.to(device)
-
+                    
+                    print(labels)
                     y.append(int(labels.tolist()[1]))
 
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
