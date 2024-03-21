@@ -116,11 +116,11 @@ def train_mat(
                     outputs = model(node_features, batch_mask, adjacency_matrices, distance_matrices, None)
                     if trainset.prediction_task == "classification":
                         outputs = torch.sigmoid(outputs)
-                        print(outputs)
+                        # print(outputs)
                         outputs_softmaxed = torch.nn.functional.softmax(outputs)
-                        pred = torch.round(outputs_softmaxed)
-                        print(pred)
-                        y_pred.append(int(pred.tolist()[1]))
+                        # pred = torch.round(outputs_softmaxed)
+                        # print(pred)
+                        y_pred.append(outputs_softmaxed[:,1].tolist())
 
                     # print(f"outputs: {outputs.cpu().detach().numpy()}")
                     # print(f"labels: {labels.cpu().detach().numpy()}")
